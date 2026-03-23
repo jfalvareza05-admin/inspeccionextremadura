@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpositaInspector · Extremadura</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1a1a2e;--ink2:#3d3d5c;--ink3:#8a8aaa;
+  --bg:#f4f3ef;--bg2:#ffffff;--bg3:#eceae4;
+  --red:#c84b31;--red2:#e8734a;
+  --teal:#2d7a6e;--teal2:#3da090;
+  --gold:#c9943a;--gold2:#f0c040;
+  --blue:#2c5f8a;--purple:#5c3a7e;
+  --border:#e0ddd6;
+  --r:12px;--r-sm:8px;
+  --sh:0 2px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+  --sh-lg:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;background:linear-gradient(160deg,#1a1a2e 0%,#8b2a18 55%,#e8a44a 100%);display:flex;align-items:center;justify-content:center;z-index:9999;overflow:hidden}
+#login-screen::after{content:'📚';position:absolute;font-size:220px;bottom:-30px;right:-20px;opacity:.06;line-height:1;pointer-events:none}
+.login-box{position:relative;background:#fff;border-radius:24px;padding:40px 36px 32px;width:100%;max-width:370px;box-shadow:0 24px 64px rgba(0,0,0,.3);overflow:hidden}
+.login-box::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,#c84b31,#e8734a);top:-80px;right:-80px;opacity:.08}
+.login-box::after{content:'';position:absolute;width:140px;height:140px;border-radius:50%;background:#2d7a6e;bottom:-60px;left:-60px;opacity:.07}
+.login-eyebrow{display:inline-flex;align-items:center;gap:5px;background:#fff3f0;color:#c84b31;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:14px;border:1px solid rgba(200,75,49,.15)}
+.login-logo{font-family:'Playfair Display',serif;font-size:26px;color:#1a1a2e;margin-bottom:3px;line-height:1.2}
+.login-sub{font-size:12px;color:#8a8aaa;margin-bottom:26px}
+.login-tabs{display:flex;gap:3px;background:#f4f3ef;border-radius:10px;padding:3px;margin-bottom:22px}
+.ltab{flex:1;padding:9px;border:none;background:none;color:#8a8aaa;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border-radius:8px;cursor:pointer;transition:.15s}
+.ltab.active{background:#fff;color:#1a1a2e;box-shadow:0 1px 5px rgba(0,0,0,.1)}
+.l-field{margin-bottom:14px}
+.l-label{display:block;font-size:12px;color:#3d3d5c;font-weight:500;margin-bottom:5px}
+.l-input{width:100%;padding:11px 14px;background:#f7f6f2;border:1.5px solid #e8e5df;border-radius:10px;color:#1a1a2e;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:.15s}
+.l-input:focus{border-color:#c84b31;background:#fff;box-shadow:0 0 0 3px rgba(200,75,49,.08)}
+.l-input::placeholder{color:#c0bdd0}
+.l-btn{width:100%;padding:13px;background:linear-gradient(90deg,#c84b31 0%,#e8734a 100%);border:none;border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;margin-top:4px;box-shadow:0 4px 16px rgba(200,75,49,.3)}
+.l-btn:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(200,75,49,.4)}
+.l-btn:active{transform:translateY(0)}
+.l-err{font-size:12px;color:#c84b31;text-align:center;margin-top:10px;min-height:18px;font-weight:500}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:265px;min-height:100vh;background:linear-gradient(180deg,#1a1a2e 0%,#2a1a3e 60%,#1a2e2a 100%);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:transform .3s;overflow:hidden}
+.sidebar::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,75,49,.15),transparent 70%);top:-100px;right:-100px;pointer-events:none}
+.sb-logo{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);position:relative}
+.sb-logo-icon{font-size:28px;margin-bottom:6px;display:block}
+.sb-logo-title{font-family:'Playfair Display',serif;font-size:18px;color:#fff;line-height:1.2}
+.sb-logo-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:3px}
+.sb-user{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px;position:relative}
+.sb-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;border:2px solid rgba(255,255,255,.15)}
+.sb-avatar.admin{background:linear-gradient(135deg,#c84b31,#e8734a);color:#fff}
+.sb-avatar.alumno{background:linear-gradient(135deg,#2d7a6e,#3da090);color:#fff}
+.sb-username{font-size:13px;color:rgba(255,255,255,.85);font-weight:500}
+.sb-role{font-size:9px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.5px}
+.sb-nav{padding:12px 8px;flex:1;position:relative}
+.nav-section{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 12px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;font-weight:400;transition:.15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9);transform:translateX(2px)}
+.nav-item.active{background:linear-gradient(90deg,rgba(200,75,49,.3),rgba(200,75,49,.08));color:#f09070;font-weight:500;border-left:3px solid #c84b31;padding-left:9px}
+.nav-item .ico{font-size:15px;width:20px;text-align:center}
+.sb-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,.06)}
+.logout-btn{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.35);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;transition:.15s}
+.logout-btn:hover{color:rgba(255,255,255,.7)}
+
+.main{margin-left:265px;flex:1;display:flex;flex-direction:column;background:var(--bg)}
+.topbar{background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.page-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)}
+.content{padding:28px;flex:1}
+.view{display:none}.view.active{display:block}
+
+/* ── HERO BANNER ── */
+.hero-banner{background:linear-gradient(120deg,#1a1a2e 0%,#8b2a18 55%,#c9943a 100%);border-radius:16px;padding:26px 32px 26px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden}
+.hero-banner::before{content:'📖';position:absolute;font-size:90px;right:32px;top:50%;transform:translateY(-50%);opacity:.15;line-height:1}
+.hero-title{font-family:'Playfair Display',serif;font-size:21px;margin-bottom:4px}
+.hero-sub{font-size:12px;opacity:.65;max-width:400px}
+
+/* ── STAT CARDS COLORIDAS ── */
+.sc-red{background:linear-gradient(135deg,#c84b31,#e8734a);border-radius:var(--r);padding:18px;box-shadow:0 4px 18px rgba(200,75,49,.3)}
+.sc-teal{background:linear-gradient(135deg,#2d7a6e,#3da090);border-radius:var(--r);padding:18px;box-shadow:0 4px 18px rgba(45,122,110,.3)}
+.sc-blue{background:linear-gradient(135deg,#2c5f8a,#4a8fc4);border-radius:var(--r);padding:18px;box-shadow:0 4px 18px rgba(44,95,138,.3)}
+.sc-gold{background:linear-gradient(135deg,#b8780a,#d4a843);border-radius:var(--r);padding:18px;box-shadow:0 4px 18px rgba(180,120,10,.3)}
+.sc-red,.sc-teal,.sc-blue,.sc-gold{color:#fff}
+.scc-ico{font-size:26px;margin-bottom:8px;display:block;opacity:.9}
+.scc-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:5px}
+.scc-val{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.scc-sub{font-size:11px;opacity:.65;margin-top:4px}
+
+/* ── TEMA CARDS MEJORADAS ── */
+.tema-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 18px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh);transition:.2s;cursor:pointer;margin-bottom:8px}
+.tema-card:hover{border-color:var(--red);box-shadow:0 6px 24px rgba(200,75,49,.12);transform:translateY(-2px)}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;border-radius:var(--r-sm);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:.15s}
+.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red2)}
+.btn-teal{background:var(--teal);color:#fff}.btn-teal:hover{background:var(--teal2)}
+.btn-secondary{background:var(--bg3);color:var(--ink2);border:1px solid var(--border)}.btn-secondary:hover{background:var(--border)}
+.btn-ghost{background:transparent;color:var(--ink3);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bg3)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.btn-icon{padding:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+.btn-danger{background:rgba(200,75,49,.1);color:var(--red);border:1px solid rgba(200,75,49,.2)}.btn-danger:hover{background:rgba(200,75,49,.2)}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--sh)}
+.section-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--ink);margin-bottom:14px}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.stat-card .sc-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:6px}
+.stat-card .sc-val{font-size:28px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat-card .sc-sub{font-size:11px;color:var(--ink3);margin-top:3px}
+
+/* ── FORMS ── */
+.form-field{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px}
+.form-input{width:100%;padding:9px 13px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--bg2);outline:none;transition:.15s}
+.form-input:focus{border-color:var(--red)}
+textarea.form-input{resize:vertical;min-height:100px;line-height:1.5}
+select.form-input{cursor:pointer}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-green{background:rgba(45,122,110,.12);color:var(--teal)}
+.badge-amber{background:rgba(201,148,58,.15);color:var(--gold)}
+.badge-gray{background:var(--bg3);color:var(--ink3)}
+.badge-red{background:rgba(200,75,49,.1);color:var(--red)}
+.badge-blue{background:rgba(44,95,138,.1);color:var(--blue)}
+
+/* ── ADMIN TABLE ── */
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);padding:6px 10px 10px;border-bottom:1px solid var(--border)}
+.data-table td{padding:10px;font-size:13px;border-bottom:1px solid var(--bg3);color:var(--ink2);vertical-align:middle}
+.data-table tr:hover td{background:var(--bg3)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:32px 16px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border-radius:16px;width:100%;max-width:700px;box-shadow:var(--sh-lg);animation:slideIn .2s ease;flex-shrink:0}
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.modal-hd{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px}
+.modal-body{padding:20px 24px}
+.modal-ft{padding:12px 24px 20px;display:flex;gap:8px;justify-content:flex-end}
+.close-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--ink3);line-height:1}
+
+/* ── UPLOAD ZONE ── */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:36px 20px;text-align:center;cursor:pointer;transition:.2s;background:var(--bg2)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--red);background:rgba(200,75,49,.03)}
+.upload-icon{font-size:32px;margin-bottom:10px}
+.upload-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--ink3)}
+
+/* ── RESOURCE TABS ── */
+.rcon{display:none}.rcon.active{display:block}
+
+/* ── RESOURCE CARD GRID ── */
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:4px}
+.rec-card{border-radius:14px;padding:16px 14px 14px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;border:1.5px solid transparent;text-align:left}
+.rec-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.rec-card.unavailable{opacity:.6;cursor:default}
+.rec-card.unavailable:hover{transform:none;box-shadow:none}
+.rec-card-ico{font-size:28px;margin-bottom:10px;display:block;line-height:1}
+.rec-card-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:3px;line-height:1.3}
+.rec-card-desc{font-size:10px;opacity:.7;color:#fff;line-height:1.4}
+.rec-card-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:.5px;text-transform:uppercase}
+.rec-badge-ok{background:rgba(255,255,255,.25);color:#fff}
+.rec-badge-pend{background:rgba(0,0,0,.2);color:rgba(255,255,255,.7)}
+.rec-badge-yo{background:rgba(255,255,255,.3);color:#fff}
+
+/* ── RESOURCE CONTENT PANEL ── */
+.rec-panel{display:none;animation:fadeUp .2s ease}
+.rec-panel.open{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rec-panel-header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;margin-bottom:16px;cursor:pointer;transition:.15s}
+.rec-panel-header:hover{opacity:.85}
+.rec-panel-back{font-size:16px;line-height:1}
+.rec-panel-htitle{font-size:13px;font-weight:600;color:#fff;flex:1}
+.rec-panel-hsub{font-size:10px;opacity:.7;color:#fff}
+
+/* ── LOADING ── */
+.spin-wrap{display:flex;flex-direction:column;align-items:center;padding:40px 20px;gap:14px}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-text{font-size:13px;color:var(--ink3)}
+
+/* ── QUIZ ── */
+.q-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;margin-bottom:12px}
+.q-text{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px}
+.q-opt{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;margin-bottom:3px;font-size:12px;color:var(--ink2);border:1px solid transparent;transition:.1s}
+.q-opt:hover{background:var(--bg3)}
+.q-opt.correct{background:rgba(45,122,110,.1);border-color:var(--teal);color:var(--teal)}
+.q-opt.wrong{background:rgba(200,75,49,.08);border-color:var(--red);color:var(--red)}
+.q-exp{margin-top:7px;padding:7px 10px;background:rgba(201,148,58,.1);border-radius:6px;font-size:11px;color:#7a5a10;display:none}
+.quiz-score{text-align:center;padding:20px;background:var(--bg3);border-radius:var(--r);margin-top:14px}
+.score-num{font-size:44px;font-weight:600;color:var(--teal)}
+.score-lbl{font-size:13px;color:var(--ink3)}
+
+/* ── FLASHCARDS ── */
+.fc-wrap{perspective:1000px;height:200px;cursor:pointer;margin-bottom:16px}
+.fc{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.fc.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.fc-front{background:var(--ink);color:#fff}
+.fc-back{background:var(--teal);color:#fff;transform:rotateY(180deg)}
+.fc-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;opacity:.5;margin-bottom:10px}
+.fc-txt{font-size:14px;font-weight:500;line-height:1.5}
+.fc-nav{display:flex;align-items:center;justify-content:space-between}
+.fc-ctr{font-size:12px;color:var(--ink3)}
+
+/* ── INFOGRAFÍA ── */
+.infog{background:linear-gradient(135deg,#1a1a2e,#2d1f45,#1a2e35);border-radius:var(--r);padding:24px;color:#fff;min-height:360px}
+.infog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.infog-block{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:13px}
+.infog-block-ico{font-size:20px;margin-bottom:6px}
+.infog-block-title{font-size:11px;font-weight:600;color:#f0c040;margin-bottom:4px}
+.infog-block-txt{font-size:11px;opacity:.75;line-height:1.6}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:14px}
+.tl-dot{position:absolute;left:-20px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid var(--bg2)}
+.tl-date{font-size:10px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.tl-text{font-size:12px;color:var(--ink2);line-height:1.5}
+
+/* ── SHORT ANSWER ── */
+.sa-q{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;margin-bottom:12px}
+.sa-q-text{font-size:13px;font-weight:500;margin-bottom:10px}
+.sa-textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;resize:vertical;min-height:70px;background:var(--bg2);outline:none}
+.sa-feedback{margin-top:8px;padding:8px 12px;border-radius:6px;font-size:12px;line-height:1.5;display:none}
+.sa-feedback.good{background:rgba(45,122,110,.1);color:var(--teal)}
+.sa-feedback.bad{background:rgba(200,75,49,.08);color:var(--red)}
+
+/* ── SCORE HISTORY ── */
+.score-bar{height:28px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:4px;display:flex;align-items:center}
+.score-bar-fill{height:100%;background:var(--teal);border-radius:4px;transition:width .5s;display:flex;align-items:center;padding-left:8px}
+.score-bar-fill span{font-size:11px;color:#fff;font-weight:500;white-space:nowrap}
+
+/* ── PRESENTACIÓN / SLIDES ── */
+.slide-show{background:linear-gradient(135deg,#1a1a2e,#2d1f45);border-radius:var(--r);min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;color:#fff;text-align:center;position:relative;overflow:hidden}
+.slide-num{font-size:10px;letter-spacing:2px;opacity:.4;text-transform:uppercase;position:absolute;top:16px;right:20px}
+.slide-title{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:12px}
+.slide-body{font-size:14px;opacity:.8;line-height:1.7;max-width:500px}
+.slide-nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.slide-dot-row{display:flex;gap:5px}
+.slide-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:.2s}
+.slide-dot.active{background:#fff}
+
+/* ── ALUMNO TEMA CARD ── */
+.tema-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:15px 18px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh);transition:.15s;cursor:pointer;margin-bottom:8px}
+.tema-card:hover{border-color:var(--red);box-shadow:var(--sh-lg);transform:translateY(-1px)}
+.tema-num{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.b1{background:rgba(200,75,49,.1);color:var(--red)}
+.b2{background:rgba(45,122,110,.1);color:var(--teal)}
+.b3{background:rgba(44,95,138,.1);color:var(--blue)}
+.b4{background:rgba(92,58,126,.1);color:var(--purple)}
+.tema-info{flex:1}
+.tema-tit{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.tema-blq{font-size:11px;color:var(--ink3)}
+.tema-rec{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+
+/* ── PROGRESS ── */
+.prog-ring{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.prog-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px}
+.prog-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .5s}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 20px;color:var(--ink3)}
+.empty-ico{font-size:40px;margin-bottom:12px;opacity:.4}
+.empty-tit{font-size:15px;font-weight:500;color:var(--ink2);margin-bottom:6px}
+.empty-txt{font-size:13px}
+
+/* ── CONFIG NOTICE ── */
+.config-notice{background:rgba(201,148,58,.12);border:1px solid rgba(201,148,58,.3);border-radius:var(--r-sm);padding:12px 16px;font-size:12px;color:#7a5010;margin-bottom:20px;line-height:1.6}
+.config-notice strong{font-weight:600}
+
+/* Generated result prose */
+.gen-result{line-height:1.7;font-size:13px;color:var(--ink2)}
+.gen-result h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);margin:16px 0 8px}
+.gen-result h3{font-size:14px;font-weight:600;color:var(--ink);margin:12px 0 5px}
+.gen-result p{margin-bottom:8px}
+.gen-result ul,.gen-result ol{padding-left:18px;margin-bottom:8px}
+.gen-result li{margin-bottom:3px}
+.gen-result strong{font-weight:600;color:var(--ink)}
+
+/* Audio controls */
+.audio-bar{display:flex;align-items:center;gap:10px;background:var(--bg3);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:14px}
+.audio-play-btn{width:36px;height:36px;border-radius:50%;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:#fff;transition:.15s}
+.audio-play-btn:hover{background:var(--red2)}
+.audio-label{font-size:12px;color:var(--ink2)}
+.audio-sub{font-size:11px;color:var(--ink3)}
+
+/* Tabs row alumno */
+.gen-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
+.gen-sep-line{flex:1;height:1px;background:var(--border)}
+.gen-sep-lbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+
+@media(max-width:900px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── TEMAS GRID (alumno) ── */
+.temas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.tgc{background:var(--bg2);border:1.5px solid var(--border);border-radius:16px;padding:0;cursor:pointer;transition:.2s;box-shadow:var(--sh);overflow:hidden;position:relative}
+.tgc:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.13);border-color:transparent}
+.tgc-stripe{height:5px;width:100%}
+.tgc-body{padding:18px 18px 14px}
+.tgc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.tgc-badge{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;color:#fff}
+.tgc-meta{flex:1;min-width:0}
+.tgc-blq{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;opacity:.6}
+.tgc-titulo{font-size:13px;font-weight:600;color:var(--ink);line-height:1.45}
+.tgc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--bg3)}
+.tgc-estado{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500}
+.tgc-dots{display:flex;gap:3px}
+.tgc-dot{width:7px;height:7px;border-radius:50%;background:var(--bg3)}
+.tgc-dot.on{background:var(--teal)}
+.tgc-arrow{font-size:18px;color:var(--ink3);transition:.2s}
+.tgc:hover .tgc-arrow{color:var(--red);transform:translateX(4px)}
+.blq-sep{display:flex;align-items:center;gap:10px;margin:22px 0 14px}
+.blq-sep-line{flex:1;height:1px;background:var(--border)}
+.blq-sep-pill{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;white-space:nowrap}
+
+/* ── PROGRESO PAGE ── */
+.prog-donut-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.bar-chart-row{display:flex;align-items:flex-end;gap:5px;height:90px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bar-col-fill{width:100%;border-radius:3px 3px 0 0;transition:height .6s ease}
+.bar-col-lbl{font-size:9px;color:var(--ink3);margin-top:2px}
+
+/* ── ADMIN RECURSOS PROPIOS ── */
+.recurso-propio-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:var(--sh)}
+.rp-tipo{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:3px 9px;border-radius:20px;margin-bottom:8px}
+.rp-titulo{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.rp-desc{font-size:12px;color:var(--ink3);line-height:1.5}
+.rp-actions{display:flex;gap:6px;margin-top:10px}
+.rp-tipo-pdf{background:rgba(200,75,49,.1);color:var(--red)}
+.rp-tipo-link{background:rgba(44,95,138,.1);color:var(--blue)}
+.rp-tipo-texto{background:rgba(45,122,110,.1);color:var(--teal)}
+.rp-tipo-video{background:rgba(92,58,126,.1);color:var(--purple)}
+
+/* ── TOAST ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-eyebrow">🎓 Oposiciones Extremadura</div>
+    <div class="login-logo">OpositaInspector</div>
+    <div class="login-sub">Plataforma de estudio · Inspección Educativa</div>
+
+    <div class="login-tabs">
+      <button class="ltab active" onclick="setLoginTab('alumno')">Soy alumno</button>
+      <button class="ltab" onclick="setLoginTab('admin')">Administrador</button>
+    </div>
+
+    <div id="login-alumno-form">
+      <div class="l-field"><label class="l-label">Usuario</label><input class="l-input" id="l-user" placeholder="Tu usuario" autocomplete="username"></div>
+      <div class="l-field"><label class="l-label">Contraseña</label><input class="l-input" type="password" id="l-pass" placeholder="Tu contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="l-btn" onclick="doLogin()">Entrar →</button>
+    </div>
+
+    <div id="login-admin-form" style="display:none">
+      <div class="l-field"><label class="l-label">Contraseña de administrador</label><input class="l-input" type="password" id="l-admin-pass" placeholder="Contraseña maestra" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+      <button class="l-btn" onclick="doAdminLogin()">Acceder →</button>
+    </div>
+
+    <div class="l-err" id="l-err"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     APP SHELL
+══════════════════════════════════ -->
+<div class="app" id="app-shell" style="display:none">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <span class="sb-logo-icon">🎓</span>
+      <div class="sb-logo-title">OpositaInspector</div>
+      <div class="sb-logo-sub">Inspección Educativa · Extremadura</div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-avatar">A</div>
+      <div>
+        <div class="sb-username" id="sb-username">Usuario</div>
+        <div class="sb-role" id="sb-role">alumno</div>
+      </div>
+    </div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-footer">
+      <button class="logout-btn" onclick="logout()">↩ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title" id="page-title">Inicio</div>
+      <div id="topbar-actions"></div>
+    </div>
+    <div class="content" id="main-content"></div>
+  </main>
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-tema"><div class="modal">
+  <div class="modal-hd"><div class="modal-title" id="mt-title">Nuevo tema</div><button class="close-btn" onclick="closeModal('modal-tema')">✕</button></div>
+  <div class="modal-body" id="mt-body"></div>
+  <div class="modal-ft" id="mt-ft"></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-recurso"><div class="modal" style="max-width:860px;border-radius:20px;overflow:hidden">
+  <div id="mr-header" style="background:linear-gradient(120deg,#1a1a2e,#8b2a18,#c9943a);padding:20px 24px 16px;position:relative">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:5px">Tema de estudio</div>
+        <div id="mr-title" style="font-family:'Playfair Display',serif;font-size:17px;color:#fff;line-height:1.3;max-width:640px"></div>
+      </div>
+      <button class="close-btn" onclick="closeModal('modal-recurso');stopAudio()" style="color:rgba(255,255,255,.6);font-size:20px;flex-shrink:0;margin-left:12px">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap" id="mr-action-btns">
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:11px" onclick="descargarTemaPDF()">⬇️ Descargar tema</button>
+      <button class="btn btn-sm" id="mr-dl-recurso" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:11px;display:none" onclick="descargarRecursoActual()">⬇️ Descargar recurso</button>
+      <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:11px" onclick="generarRecursosExtra()">✨ Recurso extra</button>
+      <span id="mr-save-all-btn" style="display:none">
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:11px" onclick="guardarTodosEnRepositorio(currentTema?.id)">💾 Guardar todos</button>
+      </span>
+    </div>
+  </div>
+  <div class="modal-body" id="mr-body" style="padding:20px 24px;max-height:60vh;overflow-y:auto"></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-alumno"><div class="modal" style="max-width:420px">
+  <div class="modal-hd"><div class="modal-title" id="ma-title">Alumno</div><button class="close-btn" onclick="closeModal('modal-alumno')">✕</button></div>
+  <div class="modal-body" id="ma-body"></div>
+  <div class="modal-ft" id="ma-ft"></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-extra"><div class="modal" style="max-width:480px">
+  <div class="modal-hd"><div class="modal-title">✨ Recurso adicional</div><button class="close-btn" onclick="closeModal('modal-extra')">✕</button></div>
+  <div class="modal-body">
+    <div class="form-field"><label class="form-label">¿Qué tipo de recurso quieres?</label>
+    <select class="form-input" id="extra-tipo">
+      <option value="ejercicio_practico">📝 Supuesto práctico completo</option>
+      <option value="caso_practico">🔍 Caso práctico resuelto</option>
+      <option value="oral_simulacro">🎤 Simulacro de examen oral</option>
+      <option value="normativa">⚖️ Análisis normativo profundo</option>
+      <option value="test_alternativo">❓ Test avanzado (15 preguntas)</option>
+      <option value="preguntas_reflexion">💭 Preguntas de reflexión</option>
+      <option value="comparativa">📊 Tabla comparativa exhaustiva</option>
+      <option value="conexiones">🔗 Conexiones entre temas</option>
+      <option value="esquema_visual">🗂️ Esquema visual completo</option>
+      <option value="vocabulario">📖 Glosario técnico completo</option>
+    </select></div>
+    <div class="form-field"><label class="form-label">Enfoque específico (opcional)</label>
+    <input class="form-input" id="extra-enfoque" placeholder="Ej: enfocado en legislación de Extremadura, para examen oral..."></div>
+  </div>
+  <div class="modal-ft">
+    <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-extra')">Cancelar</button>
+    <button class="btn btn-primary btn-sm" onclick="ejecutarExtra()">Generar →</button>
+  </div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════
+let CFG = {
+  apiKey: localStorage.getItem('cfg-api') || '',
+  groqKey: localStorage.getItem('cfg-groq') || '',
+  geminiKey: localStorage.getItem('cfg-gemini') || '',
+  alumnoProvider: 'gemini',
+  provider: localStorage.getItem('cfg-provider') || 'anthropic',
+  sheetUrl: localStorage.getItem('cfg-sheet') || '',
+  adminPass: localStorage.getItem('cfg-admin-pass') || 'admin1234'
+};
+
+function saveConfig() {
+  CFG.sheetUrl = localStorage.getItem('cfg-sheet') || '';
+}
+
+// Local data fallback (when no Google Sheets configured)
+let DB = {
+  temas: JSON.parse(localStorage.getItem('db-temas') || '[]'),
+  alumnos: JSON.parse(localStorage.getItem('db-alumnos') || JSON.stringify([
+    {id:'a1', username:'alumno1', password:'opos2025', nombre:'Alumno Demo', scores:[], progreso:{}}
+  ])),
+  scores: JSON.parse(localStorage.getItem('db-scores') || '[]'),
+  recursosPropios: JSON.parse(localStorage.getItem('db-recursos-propios') || '[]')
+};
+
+function saveDB() {
+  localStorage.setItem('db-temas', JSON.stringify(DB.temas));
+  localStorage.setItem('db-alumnos', JSON.stringify(DB.alumnos));
+  localStorage.setItem('db-scores', JSON.stringify(DB.scores));
+  localStorage.setItem('db-recursos-propios', JSON.stringify(DB.recursosPropios||[]));
+}
+
+// Session
+let SESSION = { role: null, user: null };
+let currentTema = null;
+let currentFlashcards = [], fcIdx = 0;
+let currentQuiz = [], currentSA = [];
+let currentSlides = [], slideIdx = 0;
+let speechSynth = window.speechSynthesis;
+let speechUtterance = null;
+
+// ═══════════════════════════════════════════
+// GOOGLE SHEETS BRIDGE
+// ═══════════════════════════════════════════
+async function sheetReq(action, payload={}) {
+  if (!CFG.sheetUrl) return null;
+  try {
+    const url = CFG.sheetUrl + '?action=' + action + '&' + new URLSearchParams(payload);
+    const r = await fetch(url);
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function sheetPost(action, payload={}) {
+  if (!CFG.sheetUrl) return null;
+  try {
+    const r = await fetch(CFG.sheetUrl, {
+      method:'POST', body: JSON.stringify({action, ...payload}),
+      headers:{'Content-Type':'application/json'}
+    });
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// ═══════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════
+let loginTab = 'alumno';
+function setLoginTab(t) {
+  loginTab = t;
+  document.querySelectorAll('.ltab').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('login-alumno-form').style.display = t==='alumno' ? 'block' : 'none';
+  document.getElementById('login-admin-form').style.display = t==='admin' ? 'block' : 'none';
+}
+
+function showErr(msg, color='#f08080') {
+  const el = document.getElementById('l-err');
+  if (el) { el.style.color = color; el.textContent = msg; }
+}
+
+async function doLogin() {
+  const user = document.getElementById('l-user').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  if (!user || !pass) { showErr('Completa usuario y contraseña'); return; }
+
+  // Try Google Sheets first
+  let alumno = null;
+  const remote = await sheetReq('login', {username: user, password: pass});
+  if (remote && remote.ok) {
+    alumno = remote.alumno;
+    DB.alumnos = remote.alumnos || DB.alumnos;
+    DB.temas = remote.temas || DB.temas;
+  } else {
+    alumno = DB.alumnos.find(a => a.username===user && a.password===pass);
+  }
+
+  if (!alumno) { showErr('Usuario o contraseña incorrectos'); return; }
+  SESSION = { role:'alumno', user: alumno };
+  launchApp();
+}
+
+function doAdminLogin() {
+  const pass = document.getElementById('l-admin-pass').value;
+  if (pass !== CFG.adminPass && pass !== 'admin1234') { showErr('Contraseña incorrecta'); return; }
+  SESSION = { role:'admin', user: {nombre:'Administrador', username:'admin'} };
+  launchApp();
+}
+
+function launchApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'flex';
+  const isAdmin = SESSION.role === 'admin';
+  const av = document.getElementById('sb-avatar');
+  av.textContent = SESSION.user.nombre ? SESSION.user.nombre[0].toUpperCase() : 'A';
+  av.className = 'sb-avatar ' + SESSION.role;
+  document.getElementById('sb-username').textContent = SESSION.user.nombre || SESSION.user.username;
+  document.getElementById('sb-role').textContent = isAdmin ? 'Administrador' : 'Alumno';
+  renderNav();
+  if (isAdmin) showPage('admin-dashboard');
+  else showPage('alumno-temas');
+}
+
+function logout() {
+  SESSION = {role:null,user:null};
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('l-err').textContent = '';
+  document.getElementById('l-user').value = '';
+  document.getElementById('l-pass').value = '';
+  document.getElementById('l-admin-pass').value = '';
+  stopAudio();
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+const ADMIN_NAV = [
+  {section:'Panel'},
+  {id:'admin-dashboard', ico:'📊', label:'Dashboard'},
+  {section:'Contenido'},
+  {id:'admin-temas', ico:'📚', label:'Gestionar temas'},
+  {id:'admin-subir', ico:'⬆️', label:'Subir material'},
+  {id:'admin-recursos-propios', ico:'🗂️', label:'Recursos propios'},
+  {section:'Usuarios'},
+  {id:'admin-alumnos', ico:'👥', label:'Alumnos'},
+  {section:'Sistema'},
+  {id:'admin-config', ico:'⚙️', label:'Configuración'},
+];
+
+const ALUMNO_NAV = [
+  {section:'Estudio'},
+  {id:'alumno-temas', ico:'📚', label:'Mis temas'},
+  {id:'alumno-progreso', ico:'📈', label:'Mi progreso'},
+  {section:'Práctica'},
+  {id:'alumno-cuestionarios', ico:'❓', label:'Cuestionarios'},
+  {id:'alumno-flashcards', ico:'🃏', label:'Flashcards'},
+  {section:'Mis recursos'},
+  {id:'alumno-repositorio', ico:'🗃️', label:'Mi repositorio'},
+];
+
+function renderNav() {
+  const nav = SESSION.role==='admin' ? ADMIN_NAV : ALUMNO_NAV;
+  document.getElementById('sb-nav').innerHTML = nav.map(n =>
+    n.section ? `<div class="nav-section">${n.section}</div>` :
+    `<button class="nav-item" id="nav-${n.id}" onclick="showPage('${n.id}')"><span class="ico">${n.ico}</span>${n.label}</button>`
+  ).join('');
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-'+id)?.classList.add('active');
+}
+
+function showPage(id) {
+  setActiveNav(id);
+  const titles = {
+    'admin-dashboard':'Dashboard', 'admin-temas':'Gestionar temas', 'admin-subir':'Subir material',
+    'admin-alumnos':'Alumnos', 'admin-config':'Configuración', 'admin-recursos-propios':'Recursos propios',
+    'alumno-temas':'Mis temas', 'alumno-progreso':'Mi progreso',
+    'alumno-cuestionarios':'Cuestionarios', 'alumno-flashcards':'Flashcards', 'alumno-repositorio':'Mi repositorio'
+  };
+  document.getElementById('page-title').textContent = titles[id] || '';
+  const renders = {
+    'admin-dashboard': renderAdminDashboard,
+    'admin-temas': renderAdminTemas,
+    'admin-subir': renderAdminSubir,
+    'admin-alumnos': renderAdminAlumnos,
+    'admin-config': renderAdminConfig,
+    'admin-recursos-propios': renderAdminRecursosPropios,
+    'alumno-temas': renderAlumnoTemas,
+    'alumno-progreso': renderAlumnoProgreso,
+    'alumno-cuestionarios': () => renderSelectorView('cuestionario'),
+    'alumno-flashcards': () => renderSelectorView('flashcards'),
+    'alumno-repositorio': renderAlumnoRepositorio,
+  };
+  if (renders[id]) renders[id]();
+}
+
+// ═══════════════════════════════════════════
+// ADMIN DASHBOARD
+// ═══════════════════════════════════════════
+function renderAdminDashboard() {
+  const temas = DB.temas;
+  const alumnos = DB.alumnos;
+  const pub = temas.filter(t=>t.publicado).length;
+  document.getElementById('topbar-actions').innerHTML = `<button class="btn btn-primary btn-sm" onclick="showPage('admin-subir')">+ Subir tema</button>`;
+  document.getElementById('main-content').innerHTML = `
+    <div class="hero-banner">
+      <div class="hero-title">¡Bienvenido, administrador!</div>
+      <div class="hero-sub">Inspección Educativa · Extremadura · Plataforma de preparación de oposiciones</div>
+    </div>
+    <div class="stats-grid">
+      <div class="sc-red"><span class="scc-ico">📚</span><div class="scc-lbl">Temas totales</div><div class="scc-val">${temas.length}</div><div class="scc-sub">${pub} publicados</div></div>
+      <div class="sc-teal"><span class="scc-ico">👥</span><div class="scc-lbl">Alumnos activos</div><div class="scc-val">${alumnos.length}</div><div class="scc-sub">con acceso</div></div>
+      <div class="sc-blue"><span class="scc-ico">⚡</span><div class="scc-lbl">Recursos generados</div><div class="scc-val">${temas.reduce((a,t)=>a+(t.recursosGenerados||0),0)}</div><div class="scc-sub">entre todos los temas</div></div>
+      <div class="sc-gold"><span class="scc-ico">🏆</span><div class="scc-lbl">Media de notas</div><div class="scc-val">${getMediaScores()}%</div><div class="scc-sub">en cuestionarios</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:18px">
+      <div class="card">
+        <div class="section-title">Temas recientes</div>
+        ${temas.length ? temas.slice(-5).reverse().map(t=>`
+          <div class="tema-card" onclick="showPage('admin-temas')">
+            <div class="tema-num ${bloqueClass(t.bloque)}">${t.numero||'?'}</div>
+            <div class="tema-info"><div class="tema-tit">${t.titulo}</div><div class="tema-blq">${t.bloque}</div></div>
+            ${t.publicado ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-gray">Borrador</span>'}
+          </div>`).join('') :
+          `<div class="empty"><div class="empty-ico">📂</div><div class="empty-tit">Sin temas</div><button class="btn btn-primary" style="margin-top:14px" onclick="showPage('admin-subir')">Subir primer tema</button></div>`}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="section-title">Alumnos recientes</div>
+          ${alumnos.slice(0,5).map(a=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bg3)">
+              <div class="sb-avatar alumno" style="width:28px;height:28px;font-size:12px">${a.nombre?a.nombre[0]:a.username[0].toUpperCase()}</div>
+              <div style="flex:1"><div style="font-size:13px;font-weight:500">${a.nombre||a.username}</div><div style="font-size:11px;color:var(--ink3)">@${a.username}</div></div>
+            </div>`).join('')}
+          ${!alumnos.length ? '<div style="font-size:13px;color:var(--ink3)">Sin alumnos registrados</div>' : ''}
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px;width:100%" onclick="showPage('admin-alumnos')">Gestionar alumnos →</button>
+        </div>
+        <div class="card">
+          <div class="section-title">Acciones rápidas</div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <button class="btn btn-secondary" style="text-align:left" onclick="showPage('admin-subir')">⬆️ Subir nuevo tema</button>
+            <button class="btn btn-secondary" style="text-align:left" onclick="showPage('admin-alumnos')">👤 Añadir alumno</button>
+            <button class="btn btn-secondary" style="text-align:left" onclick="showPage('admin-config')">⚙️ Configuración</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function getMediaScores() {
+  const all = DB.alumnos.flatMap(a => a.scores||[]);
+  return all.length ? Math.round(all.reduce((a,b)=>a+b,0)/all.length) : '—';
+}
+
+// ═══════════════════════════════════════════
+// ADMIN TEMAS
+// ═══════════════════════════════════════════
+function renderAdminTemas() {
+  document.getElementById('topbar-actions').innerHTML = `<button class="btn btn-primary btn-sm" onclick="showPage('admin-subir')">+ Nuevo tema</button>`;
+  const temas = DB.temas;
+  document.getElementById('main-content').innerHTML = `
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <input class="form-input" style="flex:1" placeholder="Buscar temas..." oninput="filterAdminTemas(this.value)" id="srch-temas">
+        <select class="form-input" style="width:auto" onchange="filterAdminTemas(document.getElementById('srch-temas').value,this.value)" id="fl-blq">
+          <option value="">Todos los bloques</option>
+          <option>Bloque I</option><option>Bloque II</option><option>Bloque III</option><option>Bloque IV</option><option>Otro</option>
+        </select>
+      </div>
+      <div id="admin-temas-list">${renderAdminTemasList(temas)}</div>
+    </div>`;
+}
+
+function filterAdminTemas(q, blq) {
+  blq = blq || document.getElementById('fl-blq')?.value || '';
+  const r = DB.temas.filter(t =>
+    (!q || t.titulo.toLowerCase().includes(q.toLowerCase()) || String(t.numero).includes(q)) &&
+    (!blq || t.bloque===blq)
+  );
+  document.getElementById('admin-temas-list').innerHTML = renderAdminTemasList(r);
+}
+
+function renderAdminTemasList(temas) {
+  if (!temas.length) return `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-tit">Sin resultados</div></div>`;
+  return `<table class="data-table">
+    <thead><tr><th>Nº</th><th>Título</th><th>Bloque</th><th>Estado</th><th>Recursos</th><th>Acciones</th></tr></thead>
+    <tbody>${temas.map(t=>`
+      <tr>
+        <td style="font-weight:600;color:var(--ink)">${t.numero||'—'}</td>
+        <td style="max-width:240px;font-size:12px">${t.titulo}</td>
+        <td><span class="badge badge-blue" style="font-size:10px">${t.bloque}</span></td>
+        <td>${t.publicado?'<span class="badge badge-green">Publicado</span>':'<span class="badge badge-gray">Borrador</span>'}</td>
+        <td style="font-size:12px;color:var(--ink3)">${t.recursosGenerados||0} generados</td>
+        <td>
+          <div style="display:flex;gap:5px">
+            <button class="btn btn-teal btn-xs" onclick="generarTodosRecursos('${t.id}')">⚡ Generar recursos</button>
+            <button class="btn btn-secondary btn-xs" onclick="togglePublicar('${t.id}')">${t.publicado?'Ocultar':'Publicar'}</button>
+            <button class="btn btn-ghost btn-xs" onclick="editarTema('${t.id}')">✏️</button>
+            <button class="btn btn-danger btn-xs" onclick="eliminarTema('${t.id}')">🗑️</button>
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function togglePublicar(id) {
+  const t = DB.temas.find(x=>x.id===id);
+  if (t) { t.publicado = !t.publicado; saveDB(); renderAdminTemas(); }
+}
+
+function eliminarTema(id) {
+  if (!confirm('¿Eliminar este tema y todos sus recursos?')) return;
+  DB.temas = DB.temas.filter(t=>t.id!==id);
+  saveDB(); renderAdminTemas();
+}
+
+function editarTema(id) {
+  const t = DB.temas.find(x=>x.id===id);
+  if (!t) return;
+  openTemaModal(t);
+}
+
+// ═══════════════════════════════════════════
+// ADMIN SUBIR
+// ═══════════════════════════════════════════
+let _fileContent = '';
+let _pdfBase64 = null;
+
+function renderAdminSubir() {
+  document.getElementById('topbar-actions').innerHTML = '';
+  document.getElementById('main-content').innerHTML = `
+    <div style="max-width:620px;margin:0 auto">
+      ${!CFG.apiKey ? `<div class="config-notice">⚠️ <strong>Sin API Key configurada.</strong> Ve a <em>Configuración</em> para añadir tu clave de Anthropic. Sin ella no se generarán los recursos con IA.</div>` : ''}
+      <div class="card" style="margin-bottom:18px">
+        <div class="section-title">Subir archivo</div>
+        <div class="upload-zone" id="uz" onclick="document.getElementById('fi').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dropFile(event)">
+          <div class="upload-icon">📑</div>
+          <div class="upload-title">Arrastra tu archivo o haz clic</div>
+          <div class="upload-sub">Formatos: .pdf · .docx · .txt</div>
+        </div>
+        <input type="file" id="fi" accept=".pdf,.docx,.txt,.doc" style="display:none" onchange="handleFile(event)">
+        <div id="fp" style="display:none;margin-top:12px;padding:10px 14px;background:var(--bg3);border-radius:var(--r-sm);display:flex;align-items:center;gap:10px">
+          <span>📄</span>
+          <div style="flex:1"><div id="fn" style="font-size:13px;font-weight:500"></div><div id="fs" style="font-size:11px;color:var(--ink3)"></div></div>
+          <button class="btn btn-ghost btn-sm" onclick="clearFile()">✕</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Datos del tema</div>
+        <div style="display:grid;grid-template-columns:80px 1fr;gap:14px">
+          <div class="form-field">
+            <label class="form-label">Nº tema</label>
+            <input class="form-input" id="t-num" type="number" min="1" max="99" placeholder="1">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Título *</label>
+            <input class="form-input" id="t-tit" placeholder="Título completo del tema">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Bloque temático</label>
+          <select class="form-input" id="t-blq">
+            <option>Bloque I – Sistema educativo</option>
+            <option>Bloque II – Organización escolar</option>
+            <option>Bloque III – Currículo y evaluación</option>
+            <option>Bloque IV – Administración educativa</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Contenido del tema</label>
+          <textarea class="form-input" id="t-con" rows="8" placeholder="Pega el contenido o se extrae automáticamente del archivo..."></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="t-pub" checked> Publicar directamente para alumnos
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="t-gen"> Generar todos los recursos con IA al guardar (requiere créditos)
+          </label>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px">
+          <button class="btn btn-secondary" onclick="clearSubirForm()">Limpiar</button>
+          <button class="btn btn-primary" onclick="guardarTema()">💾 Guardar tema</button>
+        </div>
+        <div id="save-status" style="margin-top:10px;font-size:13px;color:var(--teal);text-align:right"></div>
+      </div>
+    </div>`;
+}
+
+function dropFile(e) { e.preventDefault(); document.getElementById('uz').classList.remove('drag'); const f=e.dataTransfer.files[0]; if(f) handleFileObj(f); }
+function handleFile(e) { const f=e.target.files[0]; if(f) handleFileObj(f); }
+
+function handleFileObj(f) {
+  document.getElementById('fn').textContent = f.name;
+  document.getElementById('fs').textContent = (f.size/1024).toFixed(1)+' KB';
+  document.getElementById('fp').style.display = 'flex';
+
+  if (f.name.toLowerCase().endsWith('.pdf')) {
+    // Store original PDF as base64 for later download + extract text via PDF.js
+    const reader = new FileReader();
+    reader.onload = e => {
+      _fileContent = '';
+      _pdfBase64 = e.target.result; // store full data URL
+      // Extract text using PDF.js
+      extractPDFText(e.target.result).then(text => {
+        _fileContent = text;
+        document.getElementById('t-con').value = text.slice(0, 8000);
+        if (!document.getElementById('t-tit').value) {
+          const line = text.split('\n').find(l => l.trim().length > 5);
+          if (line) document.getElementById('t-tit').value = line.trim().slice(0, 120);
+        }
+        document.getElementById('fp').querySelector('span').textContent = '📑';
+      }).catch(() => {
+        document.getElementById('t-con').value = '(No se pudo extraer texto automáticamente. Pégalo manualmente.)';
+      });
+    };
+    reader.readAsDataURL(f);
+  } else if (f.name.endsWith('.docx') && window.mammoth) {
+    _pdfBase64 = null;
+    const r = new FileReader();
+    r.onload = e => mammoth.extractRawText({arrayBuffer:e.target.result}).then(res=>{
+      _fileContent = res.value;
+      document.getElementById('t-con').value = _fileContent.slice(0,8000);
+      if (!document.getElementById('t-tit').value) {
+        const line = res.value.split('\n').find(l=>l.trim().length>5);
+        if (line) document.getElementById('t-tit').value = line.trim().slice(0,120);
+      }
+    });
+    r.readAsArrayBuffer(f);
+  } else {
+    _pdfBase64 = null;
+    const r = new FileReader();
+    r.onload = e => { _fileContent = e.target.result; document.getElementById('t-con').value = _fileContent.slice(0,8000); };
+    r.readAsText(f);
+  }
+}
+
+async function extractPDFText(dataUrl) {
+  // Load PDF.js from CDN dynamically
+  if (!window.pdfjsLib) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const base64 = dataUrl.split(',')[1];
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  const pdf = await window.pdfjsLib.getDocument({data: bytes}).promise;
+  let text = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(item => item.str).join(' ') + '\n';
+  }
+  return text.trim();
+}
+
+function clearFile() { _fileContent=''; _pdfBase64=null; document.getElementById('fp').style.display='none'; document.getElementById('fi').value=''; }
+function clearSubirForm() { clearFile(); ['t-num','t-tit','t-con'].forEach(id=>document.getElementById(id).value=''); }
+
+async function guardarTema() {
+  const titulo = document.getElementById('t-tit').value.trim();
+  const contenido = document.getElementById('t-con').value.trim();
+  if (!titulo) { alert('El título es obligatorio'); return; }
+  if (!contenido) { alert('El contenido es obligatorio'); return; }
+  const blqRaw = document.getElementById('t-blq').value;
+  const bloque = blqRaw.split('–')[0].trim();
+
+  const tema = {
+    id: 'T'+Date.now(),
+    titulo, contenido, bloque,
+    numero: document.getElementById('t-num').value || '',
+    publicado: document.getElementById('t-pub').checked,
+    fecha: new Date().toISOString(),
+    recursosGenerados: 0,
+    recursos: {},
+    pdfBase64: null  // PDF se guarda por separado para no saturar localStorage
+  };
+  // Guardar PDF original en clave separada si existe
+  if (_pdfBase64) {
+    try {
+      localStorage.setItem('pdf-' + tema.id, _pdfBase64);
+      tema.hasPDF = true;
+    } catch(e) {
+      console.warn('PDF too large for localStorage, PDF download may not work:', e);
+      tema.hasPDF = false;
+    }
+  }
+  DB.temas.push(tema);
+  saveDB();
+
+  if (document.getElementById('t-gen').checked && CFG.apiKey) {
+    document.getElementById('save-status').textContent = '⚙️ Generando recursos con IA... (esto puede tardar unos segundos)';
+    await generarTodosRecursosParaTema(tema);
+    document.getElementById('save-status').textContent = '✓ Tema guardado con todos los recursos generados';
+  } else {
+    document.getElementById('save-status').textContent = '✓ Tema guardado correctamente';
+  }
+  clearSubirForm();
+}
+
+// ═══════════════════════════════════════════
+// ADMIN ALUMNOS
+// ═══════════════════════════════════════════
+function renderAdminAlumnos() {
+  document.getElementById('topbar-actions').innerHTML = `<button class="btn btn-primary btn-sm" onclick="openAlumnoModal()">+ Nuevo alumno</button>`;
+  document.getElementById('main-content').innerHTML = `
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Alumno</th><th>Usuario</th><th>Contraseña</th><th>Tests realizados</th><th>Media</th><th>Acciones</th></tr></thead>
+        <tbody id="alumnos-tbody">${renderAlumnoRows()}</tbody>
+      </table>
+      ${!DB.alumnos.length ? `<div class="empty"><div class="empty-ico">👥</div><div class="empty-tit">Sin alumnos</div><button class="btn btn-primary" style="margin-top:14px" onclick="openAlumnoModal()">Añadir primer alumno</button></div>` : ''}
+    </div>`;
+}
+
+function renderAlumnoRows() {
+  return DB.alumnos.map(a=>`
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="sb-avatar alumno" style="width:28px;height:28px;font-size:11px">${a.nombre?a.nombre[0]:a.username[0].toUpperCase()}</div>
+          <span style="font-weight:500">${a.nombre||'—'}</span>
+        </div>
+      </td>
+      <td style="font-family:monospace;font-size:12px">${a.username}</td>
+      <td><span style="font-family:monospace;font-size:12px;background:var(--bg3);padding:2px 7px;border-radius:4px">${a.password}</span></td>
+      <td>${(a.scores||[]).length}</td>
+      <td>${(a.scores||[]).length ? Math.round((a.scores||[]).reduce((x,y)=>x+y,0)/(a.scores||[]).length)+'%' : '—'}</td>
+      <td>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-ghost btn-xs" onclick="openAlumnoModal('${a.id}')">✏️ Editar</button>
+          <button class="btn btn-danger btn-xs" onclick="eliminarAlumno('${a.id}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function openAlumnoModal(id) {
+  const a = id ? DB.alumnos.find(x=>x.id===id) : null;
+  document.getElementById('ma-title').textContent = a ? 'Editar alumno' : 'Nuevo alumno';
+  document.getElementById('ma-body').innerHTML = `
+    <div class="form-field"><label class="form-label">Nombre completo</label><input class="form-input" id="al-nombre" value="${a?.nombre||''}"></div>
+    <div class="form-field"><label class="form-label">Usuario *</label><input class="form-input" id="al-user" value="${a?.username||''}"></div>
+    <div class="form-field"><label class="form-label">Contraseña *</label><input class="form-input" id="al-pass" value="${a?.password||''}"></div>`;
+  document.getElementById('ma-ft').innerHTML = `
+    <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-alumno')">Cancelar</button>
+    <button class="btn btn-primary btn-sm" onclick="guardarAlumno('${id||''}')">Guardar</button>`;
+  openModal('modal-alumno');
+}
+
+function guardarAlumno(id) {
+  const nombre = document.getElementById('al-nombre').value.trim();
+  const username = document.getElementById('al-user').value.trim();
+  const password = document.getElementById('al-pass').value.trim();
+  if (!username||!password) { alert('Usuario y contraseña son obligatorios'); return; }
+  if (id) {
+    const a = DB.alumnos.find(x=>x.id===id);
+    if (a) { a.nombre=nombre; a.username=username; a.password=password; }
+  } else {
+    DB.alumnos.push({id:'A'+Date.now(), nombre, username, password, scores:[], progreso:{}});
+  }
+  saveDB(); closeModal('modal-alumno'); renderAdminAlumnos();
+}
+
+function eliminarAlumno(id) {
+  if (!confirm('¿Eliminar este alumno?')) return;
+  DB.alumnos = DB.alumnos.filter(a=>a.id!==id);
+  saveDB(); renderAdminAlumnos();
+}
+
+// ═══════════════════════════════════════════
+// ADMIN CONFIG
+// ═══════════════════════════════════════════
+function renderAdminConfig() {
+  document.getElementById('topbar-actions').innerHTML = '';
+  document.getElementById('main-content').innerHTML = `
+    <div style="max-width:580px;margin:0 auto">
+
+      <div class="card" style="margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:16px">🔑</span>
+          <div class="section-title" style="margin:0">IA del Administrador</div>
+          <span class="badge badge-blue" style="margin-left:auto;font-size:10px">Alta calidad</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">Usada para generar los recursos que verán los alumnos. Se recomienda Claude (Anthropic).</div>
+        <div class="form-field">
+          <label class="form-label">API Key de Anthropic (Claude)</label>
+          <input class="form-input" id="cfg2-api" type="password" value="${CFG.apiKey}" placeholder="sk-ant-...">
+          <div style="font-size:11px;color:var(--ink3);margin-top:4px">Obtén tu clave en <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);font-weight:500">console.anthropic.com</a> → API Keys · ~5€ para cientos de temas</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:16px">🎓</span>
+          <div class="section-title" style="margin:0">IA de los Alumnos</div>
+          <span class="badge badge-green" style="margin-left:auto;font-size:10px">Gratis para alumnos</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">Usada cuando los alumnos generan sus propios recursos adicionales. Sin coste para ti.</div>
+        <div id="alumno-gemini-section" style="display:block">
+          <div class="form-field"><label class="form-label">API Key de Google Gemini</label>
+            <input class="form-input" id="cfg2-gemini" type="password" value="${CFG.geminiKey}" placeholder="AIza...">
+            <div style="font-size:11px;color:var(--ink3);margin-top:4px">Obtén tu clave gratis en <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--gold);font-weight:500">aistudio.google.com</a> → Get API Key</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <div class="section-title">Contraseña de administrador</div>
+        <div class="form-field"><label class="form-label">Nueva contraseña</label><input class="form-input" id="cfg2-apass" type="password" placeholder="Nueva contraseña"></div>
+        <div class="form-field"><label class="form-label">Confirmar</label><input class="form-input" id="cfg2-apass2" type="password" placeholder="Confirmar"></div>
+        <button class="btn btn-secondary btn-sm" onclick="cambiarAdminPass()">Cambiar contraseña</button>
+        <div id="pass-msg" style="margin-top:8px;font-size:12px"></div>
+      </div>
+
+      <div style="text-align:right">
+        <button class="btn btn-teal" onclick="saveConfig2()">✓ Guardar toda la configuración</button>
+        <div id="cfg-msg" style="margin-top:8px;font-size:12px;color:var(--teal);text-align:right"></div>
+      </div>
+    </div>`;
+}
+
+function selectProvider(p) {
+  CFG.provider = p;
+  localStorage.setItem('cfg-provider', p);
+  renderAdminConfig();
+}
+
+function selectAlumnoProvider(p) {
+  CFG.alumnoProvider = p;
+  localStorage.setItem('cfg-alumno-provider', p);
+  renderAdminConfig();
+}
+
+function saveConfig2() {
+  CFG.apiKey = document.getElementById('cfg2-api')?.value.trim() || CFG.apiKey;
+  CFG.geminiKey = document.getElementById('cfg2-gemini')?.value.trim() || CFG.geminiKey;
+  CFG.sheetUrl = document.getElementById('cfg2-sheet')?.value.trim() || CFG.sheetUrl;
+  localStorage.setItem('cfg-api', CFG.apiKey);
+  localStorage.setItem('cfg-gemini', CFG.geminiKey);
+  localStorage.setItem('cfg-sheet', CFG.sheetUrl);
+  const msg = document.getElementById('cfg-msg');
+  if (msg) { msg.textContent = '✓ Configuración guardada correctamente'; }
+}
+
+function cambiarAdminPass() {
+  const p1 = document.getElementById('cfg2-apass').value;
+  const p2 = document.getElementById('cfg2-apass2').value;
+  if (!p1) { document.getElementById('pass-msg').style.color=var_red; document.getElementById('pass-msg').textContent='Introduce una contraseña'; return; }
+  if (p1!==p2) { document.getElementById('pass-msg').style.color='var(--red)'; document.getElementById('pass-msg').textContent='Las contraseñas no coinciden'; return; }
+  CFG.adminPass = p1;
+  localStorage.setItem('cfg-admin-pass', p1);
+  document.getElementById('pass-msg').style.color='var(--teal)';
+  document.getElementById('pass-msg').textContent='✓ Contraseña actualizada';
+}
+
+// ═══════════════════════════════════════════
+// ALUMNO — TEMAS
+// ═══════════════════════════════════════════
+function renderAlumnoTemas() {
+  document.getElementById('topbar-actions').innerHTML = '';
+  const todosTemas = DB.temas.filter(t=>t.publicado);
+  const alumno = SESSION.user;
+  const comp = todosTemas.filter(t=>(alumno.progreso||{})[t.id]?.completado).length;
+  const pct = todosTemas.length ? Math.round(comp/todosTemas.length*100) : 0;
+  document.getElementById('main-content').innerHTML = `
+    <div class="hero-banner" style="margin-bottom:20px">
+      <div class="hero-title">Mis temas de oposición 📚</div>
+      <div class="hero-sub">${todosTemas.length} temas · ${comp} completados</div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+        <div style="flex:1;height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#f0c040,#e8734a);border-radius:3px"></div>
+        </div>
+        <span style="font-size:12px;opacity:.8">${pct}% completado</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px">
+      <input class="form-input" style="flex:1;min-width:180px" placeholder="🔍  Buscar por número o título..." id="srch-at" oninput="filterAlumnoTemas(this.value)">
+      <select class="form-input" style="width:auto" id="fl-at" onchange="filterAlumnoTemas(document.getElementById('srch-at').value)">
+        <option value="">Todos los bloques</option>
+        <option>Bloque I</option><option>Bloque II</option><option>Bloque III</option><option>Bloque IV</option><option>Otro</option>
+      </select>
+      <select class="form-input" style="width:auto" id="fl-est" onchange="filterAlumnoTemas(document.getElementById('srch-at').value)">
+        <option value="">Todos los estados</option>
+        <option value="comp">✅ Completados</option>
+        <option value="prog">📖 En progreso</option>
+        <option value="pend">⏳ Pendientes</option>
+      </select>
+    </div>
+    <div id="at-list">${buildAlumnoTemaGrid(todosTemas, alumno)}</div>`;
+}
+
+function filterAlumnoTemas(q) {
+  const blq = document.getElementById('fl-at')?.value || '';
+  const est = document.getElementById('fl-est')?.value || '';
+  const alumno = SESSION.user;
+  let temas = DB.temas.filter(t => t.publicado &&
+    (!q || t.titulo.toLowerCase().includes(q.toLowerCase()) || String(t.numero).includes(q)) &&
+    (!blq || t.bloque===blq));
+  if (est) temas = temas.filter(t=>{
+    const p=(alumno.progreso||{})[t.id]||{};
+    if(est==='comp') return p.completado;
+    if(est==='prog') return p.visto && !p.completado;
+    if(est==='pend') return !p.visto;
+  });
+  document.getElementById('at-list').innerHTML = buildAlumnoTemaGrid(temas, alumno);
+}
+
+function buildAlumnoTemaGrid(temas, alumno) {
+  if (!temas.length) return `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-tit">Sin resultados</div></div>`;
+  const BLOQUES = ['Bloque I','Bloque II','Bloque III','Bloque IV','Otro'];
+  const BSTYLE = {
+    'Bloque I':  {grad:'linear-gradient(135deg,#c84b31,#e8734a)', pill:'rgba(200,75,49,.12)', txt:'#a03020'},
+    'Bloque II': {grad:'linear-gradient(135deg,#2d7a6e,#3da090)', pill:'rgba(45,122,110,.12)', txt:'#1a5a50'},
+    'Bloque III':{grad:'linear-gradient(135deg,#2c5f8a,#4a8fc4)', pill:'rgba(44,95,138,.12)', txt:'#1a4070'},
+    'Bloque IV': {grad:'linear-gradient(135deg,#5c3a7e,#8a5ab0)', pill:'rgba(92,58,126,.12)', txt:'#4a2070'},
+    'Otro':      {grad:'linear-gradient(135deg,#888,#aaa)',         pill:'rgba(100,100,100,.1)', txt:'#555'}
+  };
+  let html = '';
+  for (const blq of BLOQUES) {
+    const gr = temas.filter(t=>t.bloque===blq);
+    if (!gr.length) continue;
+    const s = BSTYLE[blq];
+    html += `<div class="blq-sep">
+      <div class="blq-sep-line"></div>
+      <span class="blq-sep-pill" style="background:${s.pill};color:${s.txt}">${blq}</span>
+      <div class="blq-sep-line"></div>
+    </div>
+    <div class="temas-grid">
+      ${gr.map(t=>{
+        const p=(alumno?.progreso||{})[t.id]||{};
+        const nRec = t.recursos ? Object.keys(t.recursos).length : 0;
+        const nRP = (t.recursosPropios||[]).filter(r=>r.publicado).length;
+        const eIco = p.completado?'✅':p.visto?'📖':'⏳';
+        const eTxt = p.completado?'Completado':p.visto?'Estudiando':'Pendiente';
+        const eCol = p.completado?'var(--teal)':p.visto?'var(--gold)':'var(--ink3)';
+        const dots = Array(9).fill(0).map((_,i)=>`<div class="tgc-dot ${i<nRec?'on':''}"></div>`).join('');
+        return `<div class="tgc" onclick="abrirRecursoAlumno('${t.id}')">
+          <div class="tgc-stripe" style="background:${s.grad}"></div>
+          <div class="tgc-body">
+            <div class="tgc-top">
+              <div class="tgc-badge" style="background:${s.grad}">T${t.numero||'?'}</div>
+              <div class="tgc-meta">
+                <div class="tgc-blq" style="color:${s.txt}">${blq}</div>
+                <div class="tgc-titulo">${t.titulo}</div>
+              </div>
+            </div>
+            <div class="tgc-foot">
+              <div class="tgc-estado" style="color:${eCol}">${eIco} ${eTxt}</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${nRP>0?`<span class="badge badge-amber" style="font-size:9px">📎 ${nRP} recurso${nRP>1?'s':''}</span>`:''}
+                <div class="tgc-dots">${dots}</div>
+                <span class="tgc-arrow">→</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+  return html;
+}
+
+// ═══════════════════════════════════════════
+// ALUMNO — PROGRESO
+// ═══════════════════════════════════════════
+function renderAlumnoProgreso() {
+  const alumno = SESSION.user;
+  const temas = DB.temas.filter(t=>t.publicado);
+  const scores = alumno.scores || [];
+  const media = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  const comp = temas.filter(t=>(alumno.progreso||{})[t.id]?.completado).length;
+  const enProg = temas.filter(t=>{const p=(alumno.progreso||{})[t.id]||{}; return p.visto&&!p.completado;}).length;
+  const pend = temas.length-comp-enProg;
+  const pct = temas.length ? Math.round(comp/temas.length*100) : 0;
+  const R=52, C=Math.round(2*Math.PI*R), dash=Math.round(C*pct/100);
+  const last8=scores.slice(-8);
+  const maxS=last8.length?Math.max(...last8,1):100;
+  const BCOLS=['#c84b31','#2d7a6e','#2c5f8a','#5c3a7e'];
+  const BNAMES=['Bloque I','Bloque II','Bloque III','Bloque IV'];
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="hero-banner" style="margin-bottom:20px">
+      <div class="hero-title">Mi progreso 📈</div>
+      <div class="hero-sub">${alumno.nombre||alumno.username} · Inspección Educativa de Extremadura</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px">
+      <div class="sc-red"><span class="scc-ico">📚</span><div class="scc-lbl">Temas totales</div><div class="scc-val">${temas.length}</div></div>
+      <div class="sc-teal"><span class="scc-ico">✅</span><div class="scc-lbl">Completados</div><div class="scc-val">${comp}</div></div>
+      <div class="sc-blue"><span class="scc-ico">❓</span><div class="scc-lbl">Tests hechos</div><div class="scc-val">${scores.length}</div></div>
+      <div class="sc-gold"><span class="scc-ico">🏆</span><div class="scc-lbl">Media tests</div><div class="scc-val">${media!==null?media+'%':'—'}</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:240px 1fr 1fr;gap:18px;margin-bottom:20px">
+      <div class="card prog-donut-wrap">
+        <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px;text-align:center">Progreso global</div>
+        <svg width="140" height="140" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--bg3)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="${R}" fill="none" stroke="url(#dg)" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="${C}" stroke-dashoffset="${C-dash}" transform="rotate(-90 60 60)"/>
+          <defs><linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#c84b31"/><stop offset="100%" stop-color="#e8b84a"/>
+          </linearGradient></defs>
+          <text x="60" y="55" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="20" font-weight="700" fill="var(--ink)">${pct}%</text>
+          <text x="60" y="70" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="var(--ink3)">completado</text>
+        </svg>
+        <div style="display:flex;gap:16px;margin-top:12px;justify-content:center">
+          ${[['#c84b31','Comp.',comp],['#c9943a','Prog.',enProg],['var(--bg3)','Pend.',pend]].map(([c,l,v])=>`
+          <div style="text-align:center">
+            <div style="width:8px;height:8px;border-radius:2px;background:${c};margin:0 auto 3px"></div>
+            <div style="font-size:9px;color:var(--ink3)">${l}</div>
+            <div style="font-size:13px;font-weight:700">${v}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Puntuaciones recientes</div>
+        ${last8.length ? `
+          <div class="bar-chart-row">
+            ${last8.map((s,i)=>{
+              const h=Math.max(Math.round(s/maxS*75),4);
+              const c=s>=70?'#2d7a6e':s>=50?'#c9943a':'#c84b31';
+              return `<div class="bar-col">
+                <span style="font-size:9px;color:${c};font-weight:600">${s}%</span>
+                <div class="bar-col-fill" style="height:${h}px;background:${c};opacity:.85"></div>
+                <span class="bar-col-lbl">#${scores.length-last8.length+i+1}</span>
+              </div>`;
+            }).join('')}
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:10px;padding-top:8px;border-top:1px solid var(--bg3)">
+            <span>Media global: <strong style="color:${media>=70?'var(--teal)':media>=50?'var(--gold)':'var(--red)'}">${media}%</strong></span>
+            <span>${scores.length} tests realizados</span>
+          </div>` :
+          '<div style="text-align:center;padding:30px 0;font-size:13px;color:var(--ink3)">Aún no has hecho ningún test</div>'}
+      </div>
+
+      <div class="card">
+        <div class="section-title">Progreso por bloque</div>
+        ${BNAMES.map((blq,bi)=>{
+          const tB=temas.filter(t=>t.bloque===blq);
+          const cB=tB.filter(t=>(alumno.progreso||{})[t.id]?.completado).length;
+          const pB=tB.length?Math.round(cB/tB.length*100):0;
+          return `<div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px">
+              <span style="color:var(--ink2);font-weight:500">${blq}</span>
+              <span style="color:${BCOLS[bi]};font-weight:600">${cB}/${tB.length} temas</span>
+            </div>
+            <div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden">
+              <div style="height:100%;width:${pB}%;background:${BCOLS[bi]};border-radius:4px;transition:width .8s ease"></div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Detalle por tema</div>
+      <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead><tr><th>Nº</th><th>Tema</th><th>Bloque</th><th>Estado</th><th>Progreso</th><th>Recursos</th></tr></thead>
+        <tbody>
+          ${temas.map(t=>{
+            const p=(alumno.progreso||{})[t.id]||{};
+            const pct=p.completado?100:p.visto?40:0;
+            const col=p.completado?'var(--teal)':p.visto?'var(--gold)':'var(--ink3)';
+            const txt=p.completado?'✅ Completado':p.visto?'📖 Estudiando':'⏳ Pendiente';
+            const nR=t.recursos?Object.keys(t.recursos).length:0;
+            return `<tr>
+              <td style="font-weight:700">${t.numero||'—'}</td>
+              <td style="font-size:12px;max-width:220px">${t.titulo}</td>
+              <td><span class="badge badge-blue" style="font-size:10px">${t.bloque}</span></td>
+              <td style="font-size:12px;color:${col};font-weight:500">${txt}</td>
+              <td style="width:100px"><div style="height:5px;background:var(--bg3);border-radius:3px"><div style="height:100%;width:${pct}%;background:${col};border-radius:3px"></div></div></td>
+              <td style="font-size:12px;color:var(--ink3)">${nR} / 9</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+// SELECTOR VIEW (cuestionarios / flashcards)
+// ═══════════════════════════════════════════
+function renderSelectorView(tipo) {
+  const temas = DB.temas.filter(t=>t.publicado);
+  const tab = tipo==='cuestionario' ? 'cuestionario' : 'flashcards';
+  document.getElementById('main-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+      ${temas.length ? temas.map(t=>`
+        <div class="tema-card" onclick="abrirRecursoAlumno('${t.id}','${tab}')" style="flex-direction:column;align-items:flex-start;padding:16px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%">
+            <div class="tema-num ${bloqueClass(t.bloque)}" style="width:36px;height:36px">${t.numero||'?'}</div>
+            <span class="badge badge-blue" style="font-size:10px;margin-left:auto">${t.bloque}</span>
+          </div>
+          <div class="tema-tit" style="font-size:12px;line-height:1.4">${t.titulo}</div>
+        </div>`).join('') :
+        `<div class="empty" style="grid-column:1/-1"><div class="empty-ico">📚</div><div class="empty-tit">Sin temas publicados</div></div>`}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+// ABRIR RECURSOS (ALUMNO)
+// ═══════════════════════════════════════════
+// Config for resource cards
+const REC_CONFIG = [
+  {id:'resumen',         ico:'📝', lbl:'Resumen ejecutivo',    desc:'Ideas clave y puntos de examen',      grad:'linear-gradient(135deg,#2d7a6e,#3da090)'},
+  {id:'audio',           ico:'🔊', lbl:'Narración en audio',   desc:'Escucha el resumen del tema',         grad:'linear-gradient(135deg,#5c3a7e,#8a5ab0)'},
+  {id:'slides',          ico:'🎬', lbl:'Presentación',         desc:'Diapositivas con narración',          grad:'linear-gradient(135deg,#2c5f8a,#4a8fc4)'},
+  {id:'cuestionario',    ico:'❓', lbl:'Test tipo test',        desc:'10 preguntas con corrección',         grad:'linear-gradient(135deg,#c84b31,#e8734a)'},
+  {id:'preguntas-cortas',ico:'✍️', lbl:'Preguntas cortas',     desc:'Respuesta libre corregida por IA',    grad:'linear-gradient(135deg,#b8780a,#d4a843)'},
+  {id:'flashcards',      ico:'🃏', lbl:'Flashcards',           desc:'Tarjetas de memorización',            grad:'linear-gradient(135deg,#1a2e35,#2d5a4e)'},
+  {id:'infografia',      ico:'🖼️', lbl:'Infografía visual',    desc:'Esquema visual a todo color',         grad:'linear-gradient(135deg,#3a1a4e,#6a2a8e)'},
+  {id:'cronologia',      ico:'📅', lbl:'Cronología normativa', desc:'Hitos legislativos ordenados',        grad:'linear-gradient(135deg,#1a3a2e,#2d6a4e)'},
+  {id:'mapa',            ico:'🧠', lbl:'Mapa conceptual',      desc:'Relaciones entre conceptos',          grad:'linear-gradient(135deg,#1a1a3e,#2d2d6e)'},
+  {id:'recursos-propios',ico:'📎', lbl:'Del profesor',         desc:'Materiales añadidos por el admin',    grad:'linear-gradient(135deg,#3e1a1a,#6e2d2d)'}
+];
+
+async function abrirRecursoAlumno(id, tabInicial='') {
+  currentTema = DB.temas.find(t=>t.id===id);
+  if (!currentTema) return;
+
+  const alumno = SESSION.user;
+  if (!alumno.progreso) alumno.progreso = {};
+  if (!alumno.progreso[id]) alumno.progreso[id] = {};
+  alumno.progreso[id].visto = true;
+  saveDB();
+
+  const t = currentTema;
+  document.getElementById('mr-title').textContent = `Tema ${t.numero||'?'} · ${t.titulo}`;
+
+  // Build hidden content containers
+  const contHTML = REC_CONFIG.map(r =>
+    `<div class="rcon" id="rcon-${r.id}"></div>`
+  ).join('');
+
+  // Build card grid
+  const gridHTML = buildRecGrid(t, alumno);
+
+  document.getElementById('mr-body').innerHTML = `
+    <div id="rec-grid-view">
+      ${gridHTML}
+    </div>
+    <div id="rec-panel-view" class="rec-panel">
+      <div id="rec-panel-header" class="rec-panel-header" onclick="volverAlGrid()"></div>
+      <div id="rec-panel-content"></div>
+    </div>
+    <div style="display:none">${contHTML}</div>`;
+
+  document.getElementById('mr-dl-recurso').style.display = 'none';
+  // Mostrar "Guardar todos" solo para alumnos con recursos disponibles
+  const saveAllBtn = document.getElementById('mr-save-all-btn');
+  if (saveAllBtn) {
+    const hasRecursos = currentTema && currentTema.recursos && Object.keys(currentTema.recursos).length > 0;
+    saveAllBtn.style.display = (SESSION.role === 'alumno' && hasRecursos) ? 'inline' : 'none';
+  }
+  openModal('modal-recurso');
+
+  // If a specific tab was requested (e.g. from selector view), open it directly
+  if (tabInicial) {
+    abrirRecurso(tabInicial);
+  }
+}
+
+function buildRecGrid(t, alumno) {
+  const repo = alumno.repositorio || [];
+  return `<div class="rec-grid">
+    ${REC_CONFIG.map(r => {
+      const cached = t.recursos && t.recursos[r.id];
+      const enRepo = repo.some(x => x.temaId===t.id && x.tipo===r.id);
+      const esPropios = r.id === 'recursos-propios';
+      const nPropios = (DB.recursosPropios||[]).filter(x=>x.publicado&&(x.temaId===t.id||x.temaId==='')).length;
+
+      let badge, badgeClass, available;
+      if (esPropios) {
+        available = nPropios > 0;
+        badge = available ? `${nPropios} recurso${nPropios>1?'s':''}` : 'Sin recursos';
+        badgeClass = available ? 'rec-badge-ok' : 'rec-badge-pend';
+      } else if (r.id === 'audio') {
+        available = true; badge = '✓ Disponible'; badgeClass = 'rec-badge-ok';
+      } else if (cached) {
+        available = true; badge = '✓ Disponible'; badgeClass = 'rec-badge-ok';
+      } else if (enRepo) {
+        available = true; badge = '✓ Disponible'; badgeClass = 'rec-badge-ok';
+      } else {
+        available = false; badge = 'No disponible'; badgeClass = 'rec-badge-pend';
+      }
+
+      const unavailableClass = (!available && esPropios) ? ' unavailable' : '';
+      const clickAction = (!available && esPropios) ? '' : `onclick="abrirRecurso('${r.id}')"`;
+
+      return `<div class="rec-card${unavailableClass}" style="background:${r.grad}" ${clickAction}>
+        <span class="rec-card-badge ${badgeClass}">${badge}</span>
+        <span class="rec-card-ico">${r.ico}</span>
+        <div class="rec-card-name">${r.lbl}</div>
+        <div class="rec-card-desc">${r.desc}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+let _currentRecId = '';
+
+function abrirRecurso(id) {
+  _currentRecId = id;
+  const cfg = REC_CONFIG.find(r=>r.id===id);
+  if (!cfg) return;
+
+  // Show panel, hide grid
+  document.getElementById('rec-grid-view').style.display = 'none';
+  document.getElementById('rec-panel-view').classList.add('open');
+  document.getElementById('mr-dl-recurso').style.display = '';
+
+  // Style header with save button for alumnos
+  const hdr = document.getElementById('rec-panel-header');
+  hdr.style.background = cfg.grad;
+  const t = currentTema;
+  const tieneRecurso = t.recursos && t.recursos[id];
+  const isAlumno = SESSION.role === 'alumno';
+  const enRepo = isAlumno && estaEnRepo(t.id, id);
+
+  hdr.innerHTML = `
+    <span class="rec-panel-back">←</span>
+    <span style="font-size:20px">${cfg.ico}</span>
+    <div style="flex:1">
+      <div class="rec-panel-htitle">${cfg.lbl}</div>
+      <div class="rec-panel-hsub">← Volver a recursos</div>
+    </div>
+    ${isAlumno && tieneRecurso ? `
+      <button id="repo-toggle-btn" onclick="event.stopPropagation();toggleRepo('${t.id}','${id}')"
+        style="background:rgba(255,255,255,${enRepo?'.3':'.15'});border:1px solid rgba(255,255,255,.3);color:#fff;
+               padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0">
+        ${enRepo ? '💾 En repositorio' : '+ Guardar'}
+      </button>` : ''}`;
+
+  // Show content
+  const panelContent = document.getElementById('rec-panel-content');
+  panelContent.innerHTML = '';
+
+  // Get or create the rcon div
+  let el = document.getElementById('rcon-'+id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'rcon-'+id;
+    el.className = 'rcon active';
+    panelContent.appendChild(el);
+  } else {
+    el.className = 'rcon active';
+    panelContent.appendChild(el);
+  }
+
+  stopAudio();
+  loadRTab(id);
+}
+
+function volverAlGrid() {
+  stopAudio();
+  const t = currentTema;
+  const alumno = SESSION.user;
+  document.getElementById('rec-grid-view').style.display = '';
+  document.getElementById('rec-panel-view').classList.remove('open');
+  document.getElementById('mr-dl-recurso').style.display = 'none';
+  // Refresh grid to update badges (e.g. after generation)
+  document.getElementById('rec-grid-view').innerHTML = buildRecGrid(t, alumno);
+}
+
+function switchRTab(id) {
+  // Legacy compatibility — some places still call switchRTab
+  abrirRecurso(id);
+}
+
+async function loadRTab(id) {
+  const el = document.getElementById('rcon-'+id);
+  if (!el || el.dataset.loaded) return;
+  el.dataset.loaded = '1';
+
+  const t = currentTema;
+  const cached = t.recursos && t.recursos[id];
+
+  // Recursos propios y audio no necesitan IA
+  if (id === 'recursos-propios') { loadRecursosPropiosAlumno(el, t); return; }
+  if (id === 'audio') { loadAudio(el, t, cached); return; }
+
+  // Si hay recurso cacheado (generado por admin), mostrarlo directamente
+  if (cached) {
+    switch(id) {
+      case 'resumen': await loadResumen(el, t, cached); break;
+      case 'slides': await loadSlides(el, t, cached); break;
+      case 'cuestionario': await loadCuestionario(el, t, cached); break;
+      case 'preguntas-cortas': await loadPreguntasCortas(el, t, cached); break;
+      case 'flashcards': await loadFlashcards(el, t, cached); break;
+      case 'infografia': await loadInfografia(el, t, cached); break;
+      case 'cronologia': await loadCronologia(el, t, cached); break;
+      case 'mapa': await loadMapa(el, t, cached); break;
+    }
+    return;
+  }
+
+  // Sin caché: si es alumno, mostrar pantalla "pendiente de generación por admin"
+  // excepto para los que puede generar con Gemini él mismo
+  if (SESSION.role === 'alumno') {
+    mostrarRecursoPendiente(el, id, t);
+    return;
+  }
+
+  // Admin sin caché: generar con IA
+  switch(id) {
+    case 'resumen': await loadResumen(el, t, null); break;
+    case 'slides': await loadSlides(el, t, null); break;
+    case 'cuestionario': await loadCuestionario(el, t, null); break;
+    case 'preguntas-cortas': await loadPreguntasCortas(el, t, null); break;
+    case 'flashcards': await loadFlashcards(el, t, null); break;
+    case 'infografia': await loadInfografia(el, t, null); break;
+    case 'cronologia': await loadCronologia(el, t, null); break;
+    case 'mapa': await loadMapa(el, t, null); break;
+  }
+}
+
+
+const RECURSO_NOMBRES = {
+  resumen:'Resumen ejecutivo', audio:'Narración en audio', slides:'Presentación',
+  cuestionario:'Test tipo test', 'preguntas-cortas':'Preguntas cortas',
+  flashcards:'Flashcards', infografia:'Infografía visual',
+  cronologia:'Cronología normativa', mapa:'Mapa conceptual'
+};
+
+function mostrarRecursoPendiente(el, id, t) {
+  const cfg = REC_CONFIG.find(r=>r.id===id) || {ico:'📄', lbl:id, grad:'linear-gradient(135deg,#888,#aaa)'};
+  el.innerHTML = `
+    <div style="text-align:center;padding:40px 20px">
+      <div style="width:80px;height:80px;border-radius:20px;background:${cfg.grad};display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 18px">${cfg.ico}</div>
+      <div style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:10px">${cfg.lbl}</div>
+      <div style="font-size:13px;color:var(--ink3);line-height:1.7;max-width:320px;margin:0 auto 24px">
+        El administrador está preparando este recurso.<br>
+        Recibirás acceso en cuanto esté disponible.
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--bg3);border-radius:30px;font-size:12px;color:var(--ink3)">
+        <span style="width:8px;height:8px;border-radius:50%;background:#c9943a;display:inline-block;animation:pulse 1.5s ease-in-out infinite"></span>
+        Próximamente disponible
+      </div>
+    </div>`;
+}
+
+
+async function claude(prompt, system='Eres experto en oposiciones de Inspección Educativa en Extremadura. Responde en español.', forceProvider=null) {
+  // Solo el admin genera recursos con IA (Anthropic Claude)
+  if (SESSION.role === 'alumno') throw new Error('Generación de recursos no disponible para alumnos.');
+  if (!CFG.apiKey) throw new Error('Sin API Key de Anthropic. Ve a ⚙️ Configuración para añadirla.');
+  {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CFG.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system,messages:[{role:'user',content:prompt}]})
+    });
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+    return d.content.map(c=>c.text||'').join('');
+  }
+}
+
+async function claudeJSON(prompt, system) {
+  const txt = await claude(prompt, system||'Devuelve SOLO JSON válido sin markdown ni texto adicional. Sin comillas extras al inicio o al final.');
+  return JSON.parse(txt.replace(/```json|```/g,'').trim());
+}
+
+function loadRecursosPropiosAlumno(el, t) {
+  el.dataset.loaded = '1';
+  const todos = (DB.recursosPropios||[]).filter(r=>r.publicado&&(r.temaId===t.id||r.temaId===''));
+  const tipoIco = {pdf:'📄',link:'🔗',texto:'📝',video:'🎬'};
+  const tipoLabel = {pdf:'PDF','link':'Enlace web',texto:'Apuntes',video:'Vídeo'};
+  const tipoCol = {pdf:'rp-tipo-pdf','link':'rp-tipo-link',texto:'rp-tipo-texto',video:'rp-tipo-video'};
+  if (!todos.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-ico">📎</div><div class="empty-tit">Sin recursos adicionales</div><div class="empty-txt">El profesor/administrador no ha añadido recursos propios para este tema todavía.</div></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="margin-bottom:14px;font-size:13px;color:var(--ink3)">
+      ${todos.length} recurso${todos.length>1?'s':''} añadido${todos.length>1?'s':''} por el administrador
+    </div>
+    ${todos.map(r=>`
+      <div class="recurso-propio-card">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="width:44px;height:44px;border-radius:10px;background:${r.tipo==='pdf'?'rgba(200,75,49,.1)':r.tipo==='link'?'rgba(44,95,138,.1)':r.tipo==='video'?'rgba(92,58,126,.1)':'rgba(45,122,110,.1)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${tipoIco[r.tipo]||'📎'}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+              <span class="rp-tipo ${tipoCol[r.tipo]||'rp-tipo-texto'}">${tipoLabel[r.tipo]||r.tipo}</span>
+            </div>
+            <div class="rp-titulo">${r.titulo}</div>
+            ${r.descripcion?`<div class="rp-desc">${r.descripcion}</div>`:''}
+            ${r.url?`<a href="${r.url}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:6px 12px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--blue);font-weight:500;text-decoration:none;border:1px solid var(--border)">
+              ${tipoIco[r.tipo]||'🔗'} Abrir recurso →</a>`:''}
+            ${r.contenido&&r.tipo==='texto'?`<div style="margin-top:10px;padding:12px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--ink2);line-height:1.7;white-space:pre-wrap">${r.contenido}</div>`:''}
+          </div>
+        </div>
+      </div>`).join('')}`;
+}
+
+function spinEl(msg) { return `<div class="spin-wrap"><div class="spinner"></div><div class="spin-text">${msg}</div></div>`; }
+
+function cacheRecurso(key, data) {
+  if (!currentTema.recursos) currentTema.recursos = {};
+  currentTema.recursos[key] = data;
+  currentTema.recursosGenerados = Object.keys(currentTema.recursos).length;
+  saveDB();
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: RESUMEN
+// ═══════════════════════════════════════════
+async function loadResumen(el, t, cached) {
+  if (cached) { renderResumen(el, cached); return; }
+  el.innerHTML = spinEl('Generando resumen ejecutivo...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,4000)}"""
+
+Genera un resumen ejecutivo estructurado. SOLO este JSON:
+{
+  "idea_central": "2-3 frases resumiendo la esencia del tema",
+  "conceptos_clave": [{"concepto":"nombre","definicion":"definición breve"}],
+  "marco_normativo": ["Ley/norma 1","Ley/norma 2","..."],
+  "puntos_examen": ["Punto crítico 1","Punto crítico 2","..."],
+  "conexiones": ["Tema relacionado 1","Tema relacionado 2"]
+}
+Incluye 5-7 conceptos clave, 4-6 normas, 4-6 puntos de examen, 2-3 conexiones.`);
+    cacheRecurso('resumen', data);
+    renderResumen(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderResumen(el, d) {
+  el.innerHTML = `
+    <div style="background:linear-gradient(135deg,rgba(200,75,49,.06),rgba(45,122,110,.04));border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:6px">Idea central</div>
+      <div style="font-size:14px;color:var(--ink);line-height:1.7;font-style:italic">${d.idea_central}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div>
+        <div class="section-title" style="font-size:13px;margin-bottom:10px">Conceptos clave</div>
+        ${d.conceptos_clave.map(c=>`<div style="margin-bottom:8px"><strong style="font-size:12px;color:var(--ink)">${c.concepto}</strong><div style="font-size:12px;color:var(--ink2);margin-top:2px">${c.definicion}</div></div>`).join('')}
+      </div>
+      <div>
+        <div class="section-title" style="font-size:13px;margin-bottom:10px">Marco normativo</div>
+        ${d.marco_normativo.map(n=>`<div style="display:flex;gap:7px;margin-bottom:6px;font-size:12px"><span style="color:var(--red);font-size:14px">▸</span><span style="color:var(--ink2)">${n}</span></div>`).join('')}
+      </div>
+    </div>
+    <div style="background:rgba(201,148,58,.08);border:1px solid rgba(201,148,58,.2);border-radius:var(--r-sm);padding:14px;margin-bottom:10px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:8px">⭐ Puntos críticos para el examen</div>
+      ${d.puntos_examen.map(p=>`<div style="display:flex;gap:8px;margin-bottom:5px;font-size:12px;color:var(--ink2)"><span style="color:var(--gold)">✦</span>${p}</div>`).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--ink3)">Conexiones: ${d.conexiones.join(' · ')}</div>`;
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: AUDIO
+// ═══════════════════════════════════════════
+function loadAudio(el, t, cached) {
+  const texto = cached?.texto || (t.recursos?.resumen ? buildResumenTexto(t.recursos.resumen) : t.contenido.slice(0,2000));
+  cacheRecurso('audio', {texto});
+  renderAudio(el, texto, t.titulo);
+}
+
+function buildResumenTexto(r) {
+  if (!r) return '';
+  return `${r.idea_central}. Conceptos clave: ${r.conceptos_clave?.map(c=>c.concepto+': '+c.definicion).join('. ')}. Marco normativo: ${r.marco_normativo?.join(', ')}. Puntos de examen: ${r.puntos_examen?.join('. ')}.`;
+}
+
+function renderAudio(el, texto, titulo) {
+  el.innerHTML = `
+    <div style="margin-bottom:16px">
+      <div class="audio-bar">
+        <button class="audio-play-btn" id="audio-btn" onclick="toggleAudio('${encodeURIComponent(texto.slice(0,2000))}')">▶</button>
+        <div>
+          <div class="audio-label">Narración del resumen</div>
+          <div class="audio-sub">Texto a voz del navegador · ${Math.ceil(texto.length/800)} min aprox.</div>
+        </div>
+        <select id="voice-select" style="margin-left:auto;font-size:11px;border:1px solid var(--border);border-radius:4px;padding:4px 8px;background:var(--bg2)"></select>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r-sm);padding:14px;max-height:200px;overflow-y:auto">
+        <div style="font-size:12px;color:var(--ink2);line-height:1.7" id="audio-txt">${texto.slice(0,2000)}</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--ink3);border-top:1px solid var(--border);padding-top:10px">
+      <strong>Consejo:</strong> Para mejor experiencia, usa auriculares. La velocidad y voz dependen del navegador y sistema operativo.
+    </div>`;
+  populateVoices();
+}
+
+function populateVoices() {
+  const sel = document.getElementById('voice-select');
+  if (!sel) return;
+  const voices = speechSynth.getVoices().filter(v=>v.lang.startsWith('es'));
+  sel.innerHTML = voices.map((v,i)=>`<option value="${i}">${v.name}</option>`).join('');
+  if (!voices.length) setTimeout(populateVoices, 500);
+}
+
+function toggleAudio(encodedTxt) {
+  const txt = decodeURIComponent(encodedTxt);
+  const btn = document.getElementById('audio-btn');
+  if (speechSynth.speaking) { speechSynth.cancel(); btn.textContent='▶'; return; }
+  speechUtterance = new SpeechSynthesisUtterance(txt);
+  speechUtterance.lang = 'es-ES';
+  const sel = document.getElementById('voice-select');
+  const voices = speechSynth.getVoices().filter(v=>v.lang.startsWith('es'));
+  if (sel && voices[parseInt(sel.value)]) speechUtterance.voice = voices[parseInt(sel.value)];
+  speechUtterance.rate = 0.95;
+  speechUtterance.onend = () => { if(btn) btn.textContent='▶'; };
+  speechSynth.speak(speechUtterance);
+  btn.textContent = '⏸';
+}
+
+function stopAudio() { speechSynth?.cancel(); }
+
+// ═══════════════════════════════════════════
+// RECURSO: PRESENTACIÓN (SLIDES)
+// ═══════════════════════════════════════════
+async function loadSlides(el, t, cached) {
+  if (cached) { renderSlides(el, cached); return; }
+  el.innerHTML = spinEl('Generando presentación...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera 6 diapositivas para estudiar el tema. SOLO este JSON:
+[{"titulo":"Título diapositiva","contenido":"Texto de 2-4 líneas con el contenido clave de esta diapositiva"}]
+La primera diapositiva es introducción/portada, la última es conclusión/puntos clave.`);
+    cacheRecurso('slides', data);
+    renderSlides(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderSlides(el, slides) {
+  currentSlides = slides; slideIdx = 0;
+  el.innerHTML = `
+    <div class="slide-show" id="slide-show">
+      <div class="slide-num" id="slide-num">1 / ${slides.length}</div>
+      <div class="slide-title" id="slide-title"></div>
+      <div class="slide-body" id="slide-body"></div>
+    </div>
+    <div class="slide-nav" style="margin-top:10px">
+      <button class="btn btn-ghost btn-sm" onclick="prevSlide()">← Anterior</button>
+      <div class="slide-dot-row" id="slide-dots"></div>
+      <button class="btn btn-ghost btn-sm" onclick="nextSlide()">Siguiente →</button>
+    </div>
+    <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+      <button class="audio-play-btn" id="slide-audio-btn" style="width:30px;height:30px;font-size:12px" onclick="narrarSlide()">🔊</button>
+      <span style="font-size:12px;color:var(--ink3)">Narrar esta diapositiva</span>
+    </div>`;
+  renderSlide(0);
+  document.getElementById('slide-dots').innerHTML = slides.map((_,i)=>`<div class="slide-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join('');
+}
+
+function renderSlide(i) {
+  const s = currentSlides[i];
+  document.getElementById('slide-title').textContent = s.titulo;
+  document.getElementById('slide-body').textContent = s.contenido;
+  document.getElementById('slide-num').textContent = (i+1)+' / '+currentSlides.length;
+  document.querySelectorAll('.slide-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+}
+
+function nextSlide() { slideIdx=(slideIdx+1)%currentSlides.length; renderSlide(slideIdx); }
+function prevSlide() { slideIdx=(slideIdx-1+currentSlides.length)%currentSlides.length; renderSlide(slideIdx); }
+function goSlide(i) { slideIdx=i; renderSlide(i); }
+function narrarSlide() {
+  const s = currentSlides[slideIdx];
+  if (!s) return;
+  stopAudio();
+  speechUtterance = new SpeechSynthesisUtterance(s.titulo+'. '+s.contenido);
+  speechUtterance.lang='es-ES'; speechUtterance.rate=0.95;
+  speechSynth.speak(speechUtterance);
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: CUESTIONARIO
+// ═══════════════════════════════════════════
+async function loadCuestionario(el, t, cached) {
+  if (cached) { renderCuestionario(el, cached); return; }
+  el.innerHTML = spinEl('Generando 10 preguntas tipo test...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera exactamente 10 preguntas tipo test. SOLO este JSON:
+[{"pregunta":"Texto","opciones":["A. ...","B. ...","C. ...","D. ..."],"correcta":0,"explicacion":"Por qué es correcta..."}]
+La propiedad "correcta" es el índice 0-3 de la respuesta correcta. Preguntas variadas de dificultad media-alta.`);
+    cacheRecurso('cuestionario', data);
+    renderCuestionario(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderCuestionario(el, qs) {
+  currentQuiz = qs;
+  let html = `<div id="quiz-wrap">`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q-card" id="qc-${i}">
+      <div class="q-text">${i+1}. ${q.pregunta}</div>
+      ${q.opciones.map((o,j)=>`<label class="q-opt" id="qo-${i}-${j}"><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join('')}
+      <div class="q-exp" id="qe-${i}">${q.explicacion}</div>
+    </div>`;
+  });
+  html += `<div style="text-align:center;margin-top:14px"><button class="btn btn-primary" onclick="corregirTest()">Corregir test →</button></div></div>`;
+  el.innerHTML = html;
+}
+
+function corregirTest() {
+  let ok=0;
+  currentQuiz.forEach((q,i)=>{
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    document.getElementById('qe-'+i).style.display='block';
+    if (!sel) return;
+    const v=parseInt(sel.value);
+    document.getElementById(`qo-${i}-${v}`).classList.add(v===q.correcta?'correct':'wrong');
+    if (v!==q.correcta) document.getElementById(`qo-${i}-${q.correcta}`).classList.add('correct');
+    if (v===q.correcta) ok++;
+  });
+  const pct=Math.round(ok/currentQuiz.length*100);
+  const alumno=SESSION.user;
+  if (!alumno.scores) alumno.scores=[];
+  alumno.scores.push(pct);
+  if (!alumno.progreso) alumno.progreso={};
+  if (currentTema && !alumno.progreso[currentTema.id]) alumno.progreso[currentTema.id]={};
+  if (currentTema) alumno.progreso[currentTema.id].visto=true;
+  saveDB();
+  const sc=document.createElement('div');
+  sc.className='quiz-score';
+  sc.innerHTML=`<div class="score-num">${pct}%</div><div class="score-lbl">${ok}/${currentQuiz.length} correctas</div>`;
+  document.getElementById('quiz-wrap').appendChild(sc);
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: PREGUNTAS CORTAS
+// ═══════════════════════════════════════════
+async function loadPreguntasCortas(el, t, cached) {
+  if (cached) { renderPreguntasCortas(el, cached); return; }
+  el.innerHTML = spinEl('Generando preguntas de respuesta corta...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera 6 preguntas de respuesta corta (como en examen oral/escrito). SOLO este JSON:
+[{"pregunta":"Pregunta concreta","respuesta_esperada":"Respuesta modelo de 3-5 líneas","criterios":["Criterio 1 que debe aparecer","Criterio 2","Criterio 3"]}]`);
+    cacheRecurso('preguntas-cortas', data);
+    renderPreguntasCortas(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderPreguntasCortas(el, qs) {
+  currentSA = qs;
+  el.innerHTML = `<div id="sa-wrap">
+    ${qs.map((q,i)=>`
+      <div class="sa-q" id="sa-${i}">
+        <div class="sa-q-text">${i+1}. ${q.pregunta}</div>
+        <textarea class="sa-textarea" id="sat-${i}" placeholder="Escribe tu respuesta aquí..."></textarea>
+        <div style="display:flex;gap:7px;margin-top:7px">
+          <button class="btn btn-primary btn-xs" onclick="corregirSA(${i})">Corregir con IA →</button>
+          <button class="btn btn-ghost btn-xs" onclick="verRespuesta(${i})">Ver respuesta modelo</button>
+        </div>
+        <div class="sa-feedback" id="saf-${i}"></div>
+        <div id="sar-${i}" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(45,122,110,.08);border-radius:6px;font-size:12px;color:var(--teal);line-height:1.6">${q.respuesta_esperada}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+async function corregirSA(i) {
+  const respuesta = document.getElementById('sat-'+i).value.trim();
+  if (!respuesta) { alert('Escribe tu respuesta primero'); return; }
+  const q = currentSA[i];
+  const fb = document.getElementById('saf-'+i);
+  fb.style.display='block'; fb.className='sa-feedback'; fb.textContent='Analizando tu respuesta...';
+  try {
+    const feedback = await claude(`
+Pregunta: "${q.pregunta}"
+Respuesta modelo: "${q.respuesta_esperada}"
+Criterios clave: ${q.criterios.join(', ')}
+Respuesta del alumno: "${respuesta}"
+
+Evalúa la respuesta del alumno de forma constructiva. Indica:
+1. Puntuación estimada (0-10)
+2. Qué ha respondido correctamente
+3. Qué falta o está incorrecto
+4. Sugerencia de mejora
+
+Sé específico, constructivo y breve (máximo 6 líneas).`);
+    const score = (feedback.match(/\d+/)||[])[0];
+    const isGood = score && parseInt(score) >= 6;
+    fb.className = 'sa-feedback ' + (isGood ? 'good' : 'bad');
+    fb.textContent = feedback;
+  } catch(e) {
+    fb.className='sa-feedback bad';
+    fb.textContent='Error al corregir: '+e.message;
+  }
+}
+
+function verRespuesta(i) {
+  const el = document.getElementById('sar-'+i);
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: FLASHCARDS
+// ═══════════════════════════════════════════
+async function loadFlashcards(el, t, cached) {
+  if (cached) { currentFlashcards=cached; fcIdx=0; renderFC(el); return; }
+  el.innerHTML = spinEl('Creando flashcards...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera 12 flashcards. SOLO este JSON:
+[{"p":"¿Pregunta corta?","r":"Respuesta concisa de 1-3 frases"}]`);
+    cacheRecurso('flashcards', data);
+    currentFlashcards=data; fcIdx=0;
+    renderFC(el);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderFC(el) {
+  if (!currentFlashcards.length) return;
+  const fc = currentFlashcards[fcIdx];
+  el.innerHTML = `
+    <div class="fc-wrap" onclick="flipFC()">
+      <div class="fc" id="fc-card">
+        <div class="fc-face fc-front"><div class="fc-lbl">Pregunta · Toca para girar</div><div class="fc-txt">${fc.p}</div></div>
+        <div class="fc-face fc-back"><div class="fc-lbl">Respuesta</div><div class="fc-txt">${fc.r}</div></div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="btn btn-ghost btn-sm" onclick="prevFC(event)">← Anterior</button>
+      <span class="fc-ctr">${fcIdx+1} / ${currentFlashcards.length}</span>
+      <button class="btn btn-ghost btn-sm" onclick="nextFC(event)">Siguiente →</button>
+    </div>`;
+}
+
+function flipFC() { document.getElementById('fc-card')?.classList.toggle('flipped'); }
+function nextFC(e) { e.stopPropagation(); fcIdx=(fcIdx+1)%currentFlashcards.length; const el=document.getElementById('rcon-flashcards'); if(el) renderFC(el); }
+function prevFC(e) { e.stopPropagation(); fcIdx=(fcIdx-1+currentFlashcards.length)%currentFlashcards.length; const el=document.getElementById('rcon-flashcards'); if(el) renderFC(el); }
+
+// ═══════════════════════════════════════════
+// RECURSO: INFOGRAFÍA
+// ═══════════════════════════════════════════
+async function loadInfografia(el, t, cached) {
+  if (cached) { renderInfografia(el, cached); return; }
+  el.innerHTML = spinEl('Generando infografía visual...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera datos para una infografía visual. SOLO este JSON:
+{
+  "titulo":"Título infografía (breve)",
+  "subtitulo":"Subtítulo descriptivo",
+  "bloques":[{"ico":"📚","titulo":"Nombre bloque","texto":"2-3 líneas de contenido clave"},{"ico":"⚖️","titulo":"Nombre bloque","texto":"2-3 líneas"},{"ico":"🏛️","titulo":"...","texto":"..."},{"ico":"📋","titulo":"...","texto":"..."},{"ico":"🎯","titulo":"...","texto":"..."},{"ico":"🔑","titulo":"...","texto":"..."}],
+  "dato_clave":"Un dato o cifra importante",
+  "norma_principal":"La ley/norma más relevante"
+}`);
+    cacheRecurso('infografia', data);
+    renderInfografia(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderInfografia(el, d) {
+  const cols = ['rgba(200,75,49,.25)','rgba(45,122,110,.25)','rgba(212,168,67,.2)','rgba(44,95,138,.25)','rgba(92,58,126,.25)','rgba(61,160,144,.2)'];
+  const bords = ['rgba(200,75,49,.5)','rgba(45,122,110,.5)','rgba(212,168,67,.5)','rgba(44,95,138,.5)','rgba(92,58,126,.5)','rgba(61,160,144,.5)'];
+  el.innerHTML = `
+  <div class="infog">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:3px">${d.titulo}</div>
+      <div style="font-size:11px;opacity:.5;text-transform:uppercase;letter-spacing:1.5px">${d.subtitulo}</div>
+    </div>
+    <div class="infog-grid">${d.bloques.map((b,i)=>`
+      <div class="infog-block" style="background:${cols[i]};border-color:${bords[i]}">
+        <div class="infog-block-ico">${b.ico}</div>
+        <div class="infog-block-title">${b.titulo}</div>
+        <div class="infog-block-txt">${b.texto}</div>
+      </div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      <div style="background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.4);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;margin-bottom:3px">Dato clave</div>
+        <div style="font-size:12px;font-weight:600;color:#f0c040">${d.dato_clave}</div>
+      </div>
+      <div style="background:rgba(44,95,138,.2);border:1px solid rgba(44,95,138,.5);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;margin-bottom:3px">Norma principal</div>
+        <div style="font-size:12px;font-weight:600;color:#7eb8f7">${d.norma_principal}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: CRONOLOGÍA
+// ═══════════════════════════════════════════
+async function loadCronologia(el, t, cached) {
+  if (cached) { renderCronologia(el, cached); return; }
+  el.innerHTML = spinEl('Generando cronología legislativa...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera una cronología legislativa con 7-10 hitos. SOLO este JSON:
+[{"fecha":"Año o fecha","texto":"Descripción del hito/ley relevante para este tema"}]
+Orden cronológico. Sé específico con normas, leyes y fechas.`);
+    cacheRecurso('cronologia', data);
+    renderCronologia(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderCronologia(el, items) {
+  el.innerHTML = `<div class="section-title" style="margin-bottom:14px">Cronología normativa y legislativa</div>
+    <div class="timeline">${items.map(it=>`
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">${it.fecha}</div>
+        <div class="tl-text">${it.texto}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: MAPA CONCEPTUAL
+// ═══════════════════════════════════════════
+async function loadMapa(el, t, cached) {
+  if (cached) { renderMapa(el, cached); return; }
+  el.innerHTML = spinEl('Generando mapa conceptual...');
+  try {
+    const data = await claudeJSON(`
+Tema: "${t.titulo}" (${t.bloque}) - Inspector Educación Extremadura
+Contenido: """${t.contenido.slice(0,3500)}"""
+Genera datos para un mapa conceptual. SOLO este JSON:
+{"concepto_central":"Concepto central (máx 4 palabras)","ramas":[{"nombre":"Rama 1","conceptos":["Concepto A","Concepto B","Concepto C"]},{"nombre":"Rama 2","conceptos":["Concepto D","Concepto E","Concepto F"]},{"nombre":"Rama 3","conceptos":["Concepto G","Concepto H","Concepto I"]},{"nombre":"Rama 4","conceptos":["Concepto J","Concepto K","Concepto L"]}]}
+Cada rama: máx 3 palabras. Cada concepto: máx 3 palabras.`);
+    cacheRecurso('mapa', data);
+    renderMapa(el, data);
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+function renderMapa(el, d) {
+  const cols=[{f:'#C84B31',l:'#FAECEA'},{f:'#2D7A6E',l:'#E1F5F1'},{f:'#2C5F8A',l:'#E6F1FB'},{f:'#5C3A7E',l:'#EEE8F6'}];
+  const W=640,H=400,cx=W/2,cy=H/2;
+  const pos=[{x:cx,y:60},{x:W-70,y:cy},{x:cx,y:H-55},{x:70,y:cy}];
+  let lines='',nodes='';
+  d.ramas.forEach((rama,i)=>{
+    const p=pos[i],c=cols[i];
+    lines+=`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="${c.f}" stroke-width="1.5" stroke-opacity=".5"/>`;
+    const rW=Math.max(rama.nombre.length*8+20,90),rH=30;
+    nodes+=`<rect x="${p.x-rW/2}" y="${p.y-rH/2}" width="${rW}" height="${rH}" rx="7" fill="${c.f}"/><text x="${p.x}" y="${p.y+1}" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" font-weight="600" fill="#fff">${rama.nombre}</text>`;
+    const n=rama.conceptos.length;
+    rama.conceptos.forEach((cc,j)=>{
+      let lx,ly;
+      if(i===0){lx=cx+(j-(n-1)/2)*120;ly=16;}
+      else if(i===1){lx=W-10;ly=cy+(j-(n-1)/2)*55;}
+      else if(i===2){lx=cx+(j-(n-1)/2)*120;ly=H-12;}
+      else{lx=10;ly=cy+(j-(n-1)/2)*55;}
+      lines+=`<line x1="${p.x}" y1="${p.y}" x2="${lx}" y2="${ly}" stroke="${c.f}" stroke-width="1" stroke-opacity=".3" stroke-dasharray="3 3"/>`;
+      const cW=Math.max(cc.length*7+14,70),cH=22;
+      nodes+=`<rect x="${lx-cW/2}" y="${ly-cH/2}" width="${cW}" height="${cH}" rx="5" fill="${c.l}" stroke="${c.f}" stroke-width=".7"/><text x="${lx}" y="${ly+1}" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="10" fill="${c.f}">${cc}</text>`;
+    });
+  });
+  const mW=Math.max(d.concepto_central.length*9+24,110),mH=44;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;background:var(--bg);border-radius:var(--r)">
+    ${lines}
+    <rect x="${cx-mW/2}" y="${cy-mH/2}" width="${mW}" height="${mH}" rx="10" fill="#1a1a2e"/>
+    <text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="central" font-family="Playfair Display,serif" font-size="12" font-weight="600" fill="#fff">${d.concepto_central}</text>
+    ${nodes}
+  </svg>`;
+}
+
+// ═══════════════════════════════════════════
+// GENERAR TODOS LOS RECURSOS (ADMIN)
+// ═══════════════════════════════════════════
+async function generarTodosRecursos(id) {
+  const t = DB.temas.find(x=>x.id===id);
+  if (!t) return;
+  if (!confirm(`¿Generar todos los recursos para "${t.titulo}"? Esto puede tardar 1-2 minutos.`)) return;
+  currentTema = t;
+  await generarTodosRecursosParaTema(t);
+  alert('✓ Recursos generados y guardados');
+  renderAdminTemas();
+}
+
+async function generarTodosRecursosParaTema(t) {
+  currentTema = t;
+  if (!t.recursos) t.recursos = {};
+  const loaders = [
+    ['resumen', async()=>{ const el=document.createElement('div'); await loadResumen(el,t,null); }],
+    ['cuestionario', async()=>{ const el=document.createElement('div'); await loadCuestionario(el,t,null); }],
+    ['preguntas-cortas', async()=>{ const el=document.createElement('div'); await loadPreguntasCortas(el,t,null); }],
+    ['flashcards', async()=>{ const el=document.createElement('div'); await loadFlashcards(el,t,null); }],
+    ['infografia', async()=>{ const el=document.createElement('div'); await loadInfografia(el,t,null); }],
+    ['cronologia', async()=>{ const el=document.createElement('div'); await loadCronologia(el,t,null); }],
+    ['mapa', async()=>{ const el=document.createElement('div'); await loadMapa(el,t,null); }],
+    ['slides', async()=>{ const el=document.createElement('div'); await loadSlides(el,t,null); }],
+  ];
+  for (const [,fn] of loaders) { try { await fn(); } catch(e) { console.warn(e); } }
+}
+
+// ═══════════════════════════════════════════
+// RECURSO ADICIONAL (ALUMNO)
+// ═══════════════════════════════════════════
+function generarRecursosExtra() { openModal('modal-extra'); }
+
+async function ejecutarExtra() {
+  const tipo = document.getElementById('extra-tipo').value;
+  const enfoque = document.getElementById('extra-enfoque').value.trim();
+  closeModal('modal-extra');
+  if (!currentTema) return;
+  const t = currentTema;
+  const tipMap = {
+    ejercicio_practico:'📝 Supuesto práctico',oral_simulacro:'🎤 Simulacro oral',
+    normativa:'⚖️ Análisis normativo',test_alternativo:'❓ Test avanzado',
+    preguntas_reflexion:'💭 Reflexión profunda',comparativa:'📊 Tabla comparativa',
+    conexiones:'🔗 Conexiones temario',esquema_visual:'🗂️ Esquema visual',
+    vocabulario:'📖 Glosario técnico',caso_practico:'🔍 Caso práctico'
+  };
+  const mr = document.getElementById('mr-body');
+  const extraDiv = document.createElement('div');
+  extraDiv.style.cssText='margin-top:14px;padding:16px;background:var(--bg);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh)';
+  extraDiv.innerHTML = `<div class="spin-wrap"><div class="spinner"></div><div class="spin-text">Generando ${tipMap[tipo]||tipo}…</div></div>`;
+  mr.appendChild(extraDiv);
+  mr.scrollTop = mr.scrollHeight;
+
+  const contenido = t.contenido.slice(0,3500);
+  const ef = enfoque ? `\nEnfoque del alumno: "${enfoque}".` : '';
+  const SYS = 'Eres un experto preparador de oposiciones de Inspección Educativa de Extremadura con 20 años de experiencia. Genera recursos de máxima calidad, rigor y profundidad académica. Responde en español con HTML limpio.';
+
+  const getPrompt = () => {
+    const base = `Tema: "${t.titulo}" (${t.bloque}) - Oposición Inspector de Educación Extremadura.\nContenido:\n${contenido}\n${ef}\n\n`;
+    if (tipo==='ejercicio_practico') return base + 'Crea un SUPUESTO PRÁCTICO COMPLETO de nivel oposición con: <h2>Supuesto práctico</h2>, <h3>Situación planteada</h3> (descripción detallada y realista de un centro con un problema concreto), <h3>Datos relevantes</h3>, <h3>Cuestiones a resolver</h3> (mínimo 4 preguntas numeradas), <h3>Resolución detallada</h3> (con base normativa y artículos concretos para cada cuestión), <h3>Normativa aplicable</h3>, <h3>Conclusiones del inspector</h3>. Máxima profundidad y rigor.';
+    if (tipo==='caso_practico') return base + 'Desarrolla un CASO PRÁCTICO RESUELTO con: <h2>Caso práctico</h2>, <h3>Descripción del caso</h3> (situación real y compleja de inspección), <h3>Marco normativo aplicable</h3> (artículos concretos), <h3>Análisis del inspector</h3>, <h3>Actuaciones paso a paso</h3> (con justificación normativa), <h3>Documentación que generaría el inspector</h3>, <h3>Resolución y seguimiento</h3>.';
+    if (tipo==='oral_simulacro') return base + 'Crea un SIMULACRO DE EXAMEN ORAL con: <h2>Simulacro de exposición oral</h2>, <h3>Guión de exposición (15 minutos)</h3> (desarrollo completo con tiempos), <h3>10 preguntas del tribunal con respuestas modelo</h3>, <h3>Aspectos que valora el tribunal</h3>, <h3>Errores que debes evitar</h3>, <h3>Conexiones con otros temas del temario que impresionan al tribunal</h3>.';
+    if (tipo==='normativa') return base + 'Realiza un ANÁLISIS NORMATIVO EXHAUSTIVO con: <h2>Marco normativo</h2>, <h3>Normativa estatal</h3> (leyes orgánicas, decretos, órdenes con artículos concretos), <h3>Normativa de Extremadura</h3> (decretos y órdenes de la Junta), <h3>Evolución legislativa</h3> (cronología), <h3>Artículos clave que debes memorizar</h3>, <h3>Puntos conflictivos o interpretaciones diversas</h3>.';
+    if (tipo==='test_alternativo') return base + 'Crea 15 PREGUNTAS TIPO TEST de alta dificultad, completamente diferentes a cualquier test anterior. Para cada una: enunciado, 4 opciones (A-D) marcando la correcta con ✅, y explicación de por qué es correcta y por qué las demás son incorrectas. <h2>Test avanzado</h2> con HTML estructurado.';
+    if (tipo==='preguntas_reflexion') return base + 'Genera 6 PREGUNTAS DE REFLEXIÓN PROFUNDA de nivel oposición. Para cada una: <strong>la pregunta</strong>, <h4>Orientación para responder</h4> (guía detallada de 5-6 líneas), <h4>Normativa relacionada</h4>, <h4>Aspectos que debes destacar</h4>. <h2>Cuestiones de reflexión</h2>.';
+    if (tipo==='comparativa') return base + 'Crea una TABLA COMPARATIVA EXHAUSTIVA comparando mínimo 6 conceptos con mínimo 6 criterios relevantes para la oposición. <h2>Tabla comparativa</h2>, luego la tabla HTML con estilos inline (border-collapse:collapse, bordes en celdas), seguida de <h3>Análisis de diferencias clave</h3> con párrafos explicativos.';
+    if (tipo==='conexiones') return base + 'Analiza en profundidad las CONEXIONES DEL TEMARIO con: <h2>Mapa de conexiones</h2>, <h3>Temas directamente relacionados</h3> (con explicación), <h3>Normativa común a varios temas</h3>, <h3>Preguntas de examen que combinan temas</h3>, <h3>Estrategia de estudio conjunto</h3>, <h3>Esquema visual de relaciones</h3> (en texto con símbolos).';
+    if (tipo==='esquema_visual') return base + 'Crea un ESQUEMA VISUAL MUY COMPLETO con mínimo 5 niveles de jerarquía, usando símbolos visuales (▶ ◆ ● ○ → ◦), texto importante en <span style="color:#c84b31;font-weight:bold">, normativa asociada a cada nivel. <h2>Esquema completo</h2> con HTML usando <ul>, <li>, sangría y colores.';
+    if (tipo==='vocabulario') return base + 'Crea un GLOSARIO TÉCNICO COMPLETO con 22-25 términos ordenados alfabéticamente. Para cada uno: <dt> con el término en negrita y color, <dd> con: definición precisa, base normativa exacta donde aparece, y cómo puede aparecer en el examen. <h2>Glosario técnico</h2>, luego <dl>.';
+    return base + 'Genera un recurso de estudio completo y detallado para preparar esta oposición.';
+  };
+
+  try {
+    const result = await claude(getPrompt(), SYS);
+    extraDiv.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:2px solid var(--border)">
+        <strong style="font-size:14px;color:var(--ink)">${tipMap[tipo]||tipo}</strong>
+        ${enfoque?`<span style="font-size:11px;color:var(--ink3)">— ${enfoque}</span>`:''}
+        <button onclick="descargarExtraHTML(this)" class="btn btn-secondary btn-xs" style="margin-left:auto">⬇️ Descargar</button>
+      </div>
+      <div class="gen-result" id="extra-content-${Date.now()}">${result}</div>`;
+  } catch(e) { extraDiv.innerHTML = errEl(e.message); }
+}
+
+function descargarExtraHTML(btn) {
+  const contenido = btn.closest('div').nextElementSibling;
+  if (!contenido) return;
+  const t = currentTema;
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Recurso - ${t?.titulo||''}</title><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:0 40px;color:#1a1a2e;line-height:1.85;font-size:14px}h2{font-size:20px;color:#c84b31;border-bottom:2px solid #c84b31;padding-bottom:8px;margin:24px 0 12px}h3{font-size:16px;color:#2d7a6e;margin:16px 0 8px}h4{font-size:14px;color:#2c5f8a;margin:12px 0 6px}table{width:100%;border-collapse:collapse;margin:12px 0}th{background:#1a1a2e;color:#fff;padding:8px 10px;font-size:12px;text-align:left}td{border:1px solid #e0ddd6;padding:8px 10px;font-size:12px}@media print{body{margin:20px}}</style></head><body>${contenido.innerHTML}<script>setTimeout(()=>window.print(),400)<\/script></body></html>`;
+  abrirVentanaHTML(html);
+}
+
+// ═══════════════════════════════════════════
+// MODAL TEMA (EDIT)
+// ═══════════════════════════════════════════
+function openTemaModal(t) {
+  document.getElementById('mt-title').textContent = t ? 'Editar tema' : 'Nuevo tema';
+  document.getElementById('mt-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:80px 1fr;gap:12px">
+      <div class="form-field"><label class="form-label">Nº</label><input class="form-input" id="et-num" value="${t?.numero||''}" type="number"></div>
+      <div class="form-field"><label class="form-label">Título *</label><input class="form-input" id="et-tit" value="${t?.titulo||''}"></div>
+    </div>
+    <div class="form-field"><label class="form-label">Bloque</label>
+      <select class="form-input" id="et-blq">
+        ${['Bloque I','Bloque II','Bloque III','Bloque IV','Otro'].map(b=>`<option${t?.bloque===b?' selected':''}>${b}</option>`).join('')}
+      </select></div>
+    <div class="form-field"><label class="form-label">Contenido</label><textarea class="form-input" id="et-con" rows="6">${t?.contenido||''}</textarea></div>
+    <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="et-pub" ${t?.publicado?'checked':''}> Publicado para alumnos</label>`;
+  document.getElementById('mt-ft').innerHTML = `
+    <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-tema')">Cancelar</button>
+    <button class="btn btn-primary btn-sm" onclick="guardarEditTema('${t?.id||''}')">Guardar</button>`;
+  openModal('modal-tema');
+}
+
+function guardarEditTema(id) {
+  const tit=document.getElementById('et-tit').value.trim();
+  const con=document.getElementById('et-con').value.trim();
+  if(!tit||!con){alert('Título y contenido son obligatorios');return;}
+  if(id){
+    const t=DB.temas.find(x=>x.id===id);
+    if(t){t.titulo=tit;t.contenido=con;t.numero=document.getElementById('et-num').value;t.bloque=document.getElementById('et-blq').value;t.publicado=document.getElementById('et-pub').checked;}
+  }
+  saveDB();closeModal('modal-tema');renderAdminTemas();
+}
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function errEl(msg){return `<div style="padding:14px;background:rgba(200,75,49,.08);border-radius:var(--r-sm);font-size:13px;color:var(--red)">⚠️ ${msg}</div>`}
+function bloqueClass(b){return b==='Bloque I'?'b1':b==='Bloque II'?'b2':b==='Bloque III'?'b3':'b4'}
+
+// Load demo data
+(function(){
+  if(!DB.temas.length){
+    DB.temas=[{
+      id:'T-demo',titulo:'El sistema educativo español: estructura y principios. La LOMLOE.',
+      numero:'1',bloque:'Bloque I',publicado:true,fecha:new Date().toISOString(),recursosGenerados:0,recursos:{},
+      contenido:`El sistema educativo español está regulado fundamentalmente por la Ley Orgánica 3/2020, de 29 de diciembre (LOMLOE), que modifica la Ley Orgánica 2/2006 de Educación. Esta ley establece los principios, fines y estructura del sistema educativo.
+
+Principios del sistema educativo:
+- La calidad de la educación para todo el alumnado
+- La equidad garantizando igualdad de oportunidades  
+- La transmisión de valores democráticos
+- La flexibilidad para adaptarse a la diversidad
+
+Etapas educativas:
+1. Educación Infantil (0-6 años): primer y segundo ciclo
+2. Educación Primaria (6-12 años): seis cursos en tres ciclos
+3. ESO (12-16 años): cuatro cursos, dos ciclos
+4. Bachillerato (16-18 años): dos cursos
+5. Formación Profesional: grado básico, medio y superior
+6. Enseñanzas universitarias
+
+La Inspección Educativa tiene competencias sobre todas estas etapas. En Extremadura, el Decreto 228/2022 regula la Inspección Educativa. El Inspector tiene funciones de supervisión, control, evaluación y asesoramiento.
+
+Fines de la educación (art. 2 LOMLOE): El pleno desarrollo de la personalidad del alumnado, la formación en derechos y libertades fundamentales, la igualdad efectiva de oportunidades, el desarrollo de la capacidad de los alumnos para regular su propio aprendizaje.`
+    }];
+    saveDB();
+  }
+})();
+
+// ═══════════════════════════════════════════
+// DESCARGAS
+// ═══════════════════════════════════════════
+function descargarTemaPDF() {
+  if (!currentTema) return;
+  const t = currentTema;
+
+  // Intentar PDF original si existe y es válido
+  const b64 = t.pdfBase64 || getPDFFromStore(t.id);
+  if (b64) {
+    try {
+      // Convertir data URL a blob para descarga fiable
+      const arr = b64.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      const u8 = new Uint8Array(bstr.length);
+      for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+      const blob = new Blob([u8], {type: mime});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Tema_${t.numero||'0'}_${(t.titulo||'').slice(0,40).replace(/[^\w\sáéíóúÁÉÍÓÚñÑ]/g,'').trim()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      return;
+    } catch(e) {
+      console.warn('PDF base64 error, fallback to HTML:', e);
+    }
+  }
+
+  // Sin PDF original: generar documento HTML bien maquetado para imprimir
+  const parrafos = (t.contenido||'').split('\n')
+    .map(p => p.trim()).filter(p => p.length > 0)
+    .map(p => `<p>${p.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`)
+    .join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tema ${t.numero||''} · ${(t.titulo||'').replace(/</g,'&lt;')}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 800px; margin: 0 auto;
+         padding: 40px; color: #1a1a2e; line-height: 1.9; font-size: 14px; background: #fff; }
+  .cover { border-left: 5px solid #c84b31; padding: 16px 20px; margin-bottom: 32px; background: #fdf8f7; }
+  .badge { display: inline-block; background: #c84b31; color: #fff; font-size: 10px;
+           font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+           padding: 3px 10px; border-radius: 3px; margin-bottom: 10px; font-family: Arial, sans-serif; }
+  h1 { font-size: 20px; color: #1a1a2e; line-height: 1.35; margin-bottom: 6px; }
+  .meta { font-size: 11px; color: #8a8aaa; font-family: Arial, sans-serif; }
+  hr { border: none; border-top: 1px solid #e0ddd6; margin: 28px 0; }
+  p { margin-bottom: 14px; text-align: justify; }
+  @page { margin: 20mm; }
+  @media print { body { padding: 0; } .cover { break-inside: avoid; } }
+</style>
+</head>
+<body>
+  <div class="cover">
+    <div class="badge">Tema ${t.numero||'—'}</div>
+    <h1>${(t.titulo||'').replace(/</g,'&lt;')}</h1>
+    <div class="meta">${t.bloque||''} &nbsp;·&nbsp; Inspección Educativa de Extremadura</div>
+  </div>
+  <hr>
+  ${parrafos}
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 600);
+    });
+  <\/script>
+</body>
+</html>`;
+
+  abrirVentanaHTML(html);
+}
+
+// Intenta recuperar PDF guardado en IndexedDB si localStorage se quedó sin espacio
+function getPDFFromStore(temaId) {
+  try {
+    return localStorage.getItem('pdf-' + temaId);
+  } catch(e) { return null; }
+}
+
+function descargarRecursoActual() {
+  if (!currentTema) return;
+  // Find which tab is active
+  const tabActiva = document.querySelector('.rtab.active');
+  if (!tabActiva) return;
+  const onclick = tabActiva.getAttribute('onclick') || '';
+  const match = onclick.match(/switchRTab\('([^']+)'\)/);
+  const tabId = match ? match[1] : 'resumen';
+  const t = currentTema;
+  const recurso = t.recursos?.[tabId];
+
+  if (tabId === 'cuestionario' && recurso) {
+    descargarCuestionarioPDF(t, recurso);
+  } else if (tabId === 'flashcards' && recurso) {
+    descargarFlashcardsPDF(t, recurso);
+  } else if (tabId === 'infografia') {
+    descargarInfografiaHTML(t);
+  } else if (recurso) {
+    descargarResumenPDF(t, tabId, recurso);
+  } else {
+    alert('Este recurso aún no ha sido generado o no tiene contenido descargable.');
+  }
+}
+
+function descargarResumenPDF(t, tipo, data) {
+  const titulos = {resumen:'Resumen ejecutivo',cronologia:'Cronología legislativa',mapa:'Mapa conceptual',slides:'Presentación'};
+  let body = '';
+  if (tipo === 'resumen') {
+    body = `<h2>Idea central</h2><p>${data.idea_central}</p>
+    <h2>Conceptos clave</h2><ul>${(data.conceptos_clave||[]).map(c=>`<li><strong>${c.concepto}</strong>: ${c.definicion}</li>`).join('')}</ul>
+    <h2>Marco normativo</h2><ul>${(data.marco_normativo||[]).map(n=>`<li>${n}</li>`).join('')}</ul>
+    <h2>Puntos críticos para el examen</h2><ul>${(data.puntos_examen||[]).map(p=>`<li>${p}</li>`).join('')}</ul>
+    <h2>Conexiones</h2><p>${(data.conexiones||[]).join(' · ')}</p>`;
+  } else if (tipo === 'cronologia') {
+    body = `<h2>Cronología normativa</h2>${(data||[]).map(i=>`<p><strong>${i.fecha}</strong> — ${i.texto}</p>`).join('')}`;
+  } else if (tipo === 'slides') {
+    body = (data||[]).map((s,i)=>`<h2>${i+1}. ${s.titulo}</h2><p>${s.contenido}</p>`).join('');
+  } else {
+    body = `<pre>${JSON.stringify(data,null,2)}</pre>`;
+  }
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>${titulos[tipo]||tipo} - ${t.titulo}</title>
+  <style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:0 32px;color:#1a1a2e;line-height:1.8}h1{font-size:20px;color:#c84b31;border-bottom:2px solid #c84b31;padding-bottom:8px}h2{font-size:16px;color:#2d7a6e;margin-top:20px}ul{padding-left:20px}li{margin-bottom:6px}@media print{body{margin:20px}}</style>
+  </head><body>
+  <h1>${titulos[tipo]||tipo}: ${t.titulo}</h1>
+  <p style="color:#8a8aaa;font-size:13px">${t.bloque} · Inspección Educativa · Extremadura</p>
+  ${body}
+  <script>window.onload=()=>{window.print()}<\/script>
+  </body></html>`;
+  abrirVentanaHTML(html);
+}
+
+function descargarCuestionarioPDF(t, qs) {
+  const body = qs.map((q,i)=>`
+    <div style="margin-bottom:20px;padding:14px;border:1px solid #e0ddd6;border-radius:8px">
+      <p style="font-weight:bold;margin-bottom:8px">${i+1}. ${q.pregunta}</p>
+      ${q.opciones.map((o,j)=>`<p style="margin:4px 0;color:${j===q.correcta?'#2d7a6e':'#3d3d5c'};font-weight:${j===q.correcta?'bold':'normal'}">${j===q.correcta?'✓ ':'   '}${o}</p>`).join('')}
+      <p style="font-size:12px;color:#8a8aaa;margin-top:8px;font-style:italic">${q.explicacion}</p>
+    </div>`).join('');
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Cuestionario - ${t.titulo}</title>
+  <style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:0 32px;color:#1a1a2e;line-height:1.7}h1{font-size:20px;color:#c84b31;border-bottom:2px solid #c84b31;padding-bottom:8px}@media print{body{margin:20px}}</style>
+  </head><body>
+  <h1>Cuestionario: ${t.titulo}</h1>
+  <p style="color:#8a8aaa;font-size:13px">${t.bloque} · Las respuestas correctas aparecen en verde</p>
+  ${body}
+  <script>window.onload=()=>{window.print()}<\/script>
+  </body></html>`;
+  abrirVentanaHTML(html);
+}
+
+function descargarFlashcardsPDF(t, cards) {
+  const body = cards.map((c,i)=>`
+    <div style="margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:#1a1a2e;color:#fff;padding:14px;border-radius:8px;font-size:13px"><strong style="font-size:10px;opacity:.5;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Pregunta ${i+1}</strong>${c.p}</div>
+      <div style="background:#2d7a6e;color:#fff;padding:14px;border-radius:8px;font-size:13px"><strong style="font-size:10px;opacity:.5;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Respuesta</strong>${c.r}</div>
+    </div>`).join('');
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Flashcards - ${t.titulo}</title>
+  <style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 32px;color:#1a1a2e}h1{font-size:20px;color:#c84b31;border-bottom:2px solid #c84b31;padding-bottom:8px;margin-bottom:20px}@media print{body{margin:20px}}</style>
+  </head><body>
+  <h1>Flashcards: ${t.titulo}</h1>
+  ${body}
+  <script>window.onload=()=>{window.print()}<\/script>
+  </body></html>`;
+  abrirVentanaHTML(html);
+}
+
+function descargarInfografiaHTML(t) {
+  const el = document.getElementById('rcon-infografia');
+  if (!el || !el.innerHTML.trim()) { alert('Genera primero la infografía para poder descargarla.'); return; }
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Infografía - ${t.titulo}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>body{font-family:'DM Sans',sans-serif;background:#f4f3ef;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}:root{--gold:#c9943a;--gold2:#f0c040}@media print{body{background:#fff}}</style>
+  </head><body>${el.innerHTML}
+  <script>window.onload=()=>{window.print()}<\/script>
+  </body></html>`;
+  abrirVentanaHTML(html);
+}
+
+function abrirVentanaHTML(html) {
+  // Most reliable: create a blob, make a link, click it
+  try {
+    const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
+  } catch(e) {
+    // Last resort: write to new window directly
+    const w = window.open('', '_blank');
+    if (w) { w.document.write(html); w.document.close(); }
+    else { alert('Tu navegador está bloqueando la apertura. Por favor, permite ventanas emergentes para esta página.'); }
+  }
+}
+
+// ═══════════════════════════════════════════
+// ADMIN — RECURSOS PROPIOS
+// ═══════════════════════════════════════════
+function renderAdminRecursosPropios() {
+  document.getElementById('topbar-actions').innerHTML = `<button class="btn btn-primary btn-sm" onclick="openNuevoRecursoPropio()">+ Añadir recurso</button>`;
+  const rp = DB.recursosPropios || [];
+  const temas = DB.temas;
+  document.getElementById('main-content').innerHTML = `
+    <div class="config-notice" style="background:rgba(44,95,138,.08);border-color:rgba(44,95,138,.25);color:#1a4070;margin-bottom:20px">
+      📎 <strong>Recursos propios:</strong> Añade tus propios materiales complementarios (apuntes, esquemas, enlaces, vídeos...) vinculados a cada tema. Los alumnos los verán en la pestaña de recursos del tema correspondiente.
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div class="section-title" style="margin:0">Mis recursos (${rp.length})</div>
+        <select class="form-input" style="width:auto;margin-left:auto" id="rp-filter" onchange="filterRecursosPropios()">
+          <option value="">Todos los temas</option>
+          ${temas.map(t=>`<option value="${t.id}">${t.numero?'T'+t.numero+' — ':''}${t.titulo.slice(0,50)}</option>`).join('')}
+        </select>
+      </div>
+      <div id="rp-list">${renderRPList(rp, temas)}</div>
+    </div>`;
+}
+
+function renderRPList(rp, temas) {
+  if (!rp.length) return `<div class="empty"><div class="empty-ico">🗂️</div><div class="empty-tit">Sin recursos propios todavía</div><div class="empty-txt">Añade apuntes, esquemas, enlaces o vídeos para complementar los temas</div><button class="btn btn-primary" style="margin-top:14px" onclick="openNuevoRecursoPropio()">+ Añadir primer recurso</button></div>`;
+  const tipoStyle = {pdf:'rp-tipo-pdf',link:'rp-tipo-link',texto:'rp-tipo-texto',video:'rp-tipo-video'};
+  const tipoIco = {pdf:'📄',link:'🔗',texto:'📝',video:'🎬'};
+  return rp.map(r => {
+    const tema = temas.find(t=>t.id===r.temaId);
+    return `<div class="recurso-propio-card">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span class="rp-tipo ${tipoStyle[r.tipo]||'rp-tipo-texto'}">${tipoIco[r.tipo]||'📎'} ${r.tipo?.toUpperCase()||'TEXTO'}</span>
+            ${r.publicado?'<span class="badge badge-green">Publicado</span>':'<span class="badge badge-gray">Borrador</span>'}
+            ${tema?`<span class="badge badge-blue" style="font-size:10px">T${tema.numero||'?'} · ${tema.titulo.slice(0,30)}</span>`:'<span class="badge badge-gray" style="font-size:10px">Sin tema asignado</span>'}
+          </div>
+          <div class="rp-titulo">${r.titulo}</div>
+          ${r.descripcion?`<div class="rp-desc">${r.descripcion}</div>`:''}
+          ${r.url?`<a href="${r.url}" target="_blank" style="font-size:12px;color:var(--blue);display:block;margin-top:6px;word-break:break-all">${r.url}</a>`:''}
+          ${r.contenido&&r.tipo==='texto'?`<div style="margin-top:8px;padding:10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--ink2);line-height:1.6;max-height:100px;overflow:hidden">${r.contenido.slice(0,300)}${r.contenido.length>300?'…':''}</div>`:''}
+        </div>
+        <div class="rp-actions" style="flex-direction:column">
+          <button class="btn btn-secondary btn-xs" onclick="togglePublicarRP('${r.id}')">${r.publicado?'Ocultar':'Publicar'}</button>
+          <button class="btn btn-ghost btn-xs" onclick="editarRecursoPropio('${r.id}')">✏️ Editar</button>
+          <button class="btn btn-danger btn-xs" onclick="eliminarRecursoPropio('${r.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterRecursosPropios() {
+  const temaId = document.getElementById('rp-filter').value;
+  const rp = temaId ? (DB.recursosPropios||[]).filter(r=>r.temaId===temaId) : (DB.recursosPropios||[]);
+  document.getElementById('rp-list').innerHTML = renderRPList(rp, DB.temas);
+}
+
+function openNuevoRecursoPropio(id) {
+  const r = id ? (DB.recursosPropios||[]).find(x=>x.id===id) : null;
+  document.getElementById('mt-title').textContent = r ? 'Editar recurso' : 'Nuevo recurso propio';
+  document.getElementById('mt-body').innerHTML = `
+    <div class="form-field"><label class="form-label">Título del recurso *</label>
+      <input class="form-input" id="rp-titulo" value="${r?.titulo||''}" placeholder="Ej: Esquema resumen LOMLOE, Enlace vídeo..."></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="form-field"><label class="form-label">Tipo de recurso</label>
+        <select class="form-input" id="rp-tipo" onchange="toggleRPFields()">
+          <option value="texto" ${r?.tipo==='texto'?'selected':''}>📝 Texto / Apuntes</option>
+          <option value="link" ${r?.tipo==='link'?'selected':''}>🔗 Enlace web</option>
+          <option value="pdf" ${r?.tipo==='pdf'?'selected':''}>📄 PDF (enlace)</option>
+          <option value="video" ${r?.tipo==='video'?'selected':''}>🎬 Vídeo (enlace)</option>
+        </select></div>
+      <div class="form-field"><label class="form-label">Tema relacionado</label>
+        <select class="form-input" id="rp-tema">
+          <option value="">Sin tema específico</option>
+          ${DB.temas.map(t=>`<option value="${t.id}" ${r?.temaId===t.id?'selected':''}>${t.numero?'T'+t.numero+' — ':''}${t.titulo.slice(0,45)}</option>`).join('')}
+        </select></div>
+    </div>
+    <div class="form-field"><label class="form-label">Descripción breve</label>
+      <input class="form-input" id="rp-desc" value="${r?.descripcion||''}" placeholder="Breve descripción del recurso..."></div>
+    <div class="form-field" id="rp-url-field" style="display:${r?.tipo!=='texto'?'block':'none'}">
+      <label class="form-label">URL del recurso</label>
+      <input class="form-input" id="rp-url" value="${r?.url||''}" placeholder="https://..."></div>
+    <div class="form-field" id="rp-contenido-field" style="display:${!r?.tipo||r?.tipo==='texto'?'block':'none'}">
+      <label class="form-label">Contenido (texto, apuntes, esquema...)</label>
+      <textarea class="form-input" id="rp-contenido" rows="6" placeholder="Escribe aquí tus apuntes, esquemas o notas...">${r?.contenido||''}</textarea></div>
+    <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer">
+      <input type="checkbox" id="rp-pub" ${r?.publicado||!r?'checked':''}> Publicar para alumnos inmediatamente
+    </label>`;
+  document.getElementById('mt-ft').innerHTML = `
+    <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-tema')">Cancelar</button>
+    <button class="btn btn-primary btn-sm" onclick="guardarRecursoPropio('${id||''}')">💾 Guardar recurso</button>`;
+  openModal('modal-tema');
+}
+
+function toggleRPFields() {
+  const tipo = document.getElementById('rp-tipo').value;
+  document.getElementById('rp-url-field').style.display = tipo!=='texto' ? 'block' : 'none';
+  document.getElementById('rp-contenido-field').style.display = tipo==='texto' ? 'block' : 'none';
+}
+
+function guardarRecursoPropio(id) {
+  const titulo = document.getElementById('rp-titulo').value.trim();
+  if (!titulo) { alert('El título es obligatorio'); return; }
+  if (!DB.recursosPropios) DB.recursosPropios = [];
+  const data = {
+    id: id || 'RP'+Date.now(),
+    titulo, tipo: document.getElementById('rp-tipo').value,
+    temaId: document.getElementById('rp-tema').value,
+    descripcion: document.getElementById('rp-desc').value.trim(),
+    url: document.getElementById('rp-url')?.value.trim() || '',
+    contenido: document.getElementById('rp-contenido')?.value.trim() || '',
+    publicado: document.getElementById('rp-pub').checked,
+    fecha: new Date().toISOString()
+  };
+  if (id) {
+    const idx = DB.recursosPropios.findIndex(r=>r.id===id);
+    if (idx>=0) DB.recursosPropios[idx] = data;
+  } else {
+    DB.recursosPropios.push(data);
+    // Also attach to tema if selected
+    if (data.temaId) {
+      const tema = DB.temas.find(t=>t.id===data.temaId);
+      if (tema) { if(!tema.recursosPropios) tema.recursosPropios=[]; tema.recursosPropios.push(data.id); }
+    }
+  }
+  saveDB(); closeModal('modal-tema'); renderAdminRecursosPropios();
+}
+
+function editarRecursoPropio(id) { openNuevoRecursoPropio(id); }
+
+function togglePublicarRP(id) {
+  const r = (DB.recursosPropios||[]).find(x=>x.id===id);
+  if (r) { r.publicado=!r.publicado; saveDB(); renderAdminRecursosPropios(); }
+}
+
+function eliminarRecursoPropio(id) {
+  if (!confirm('¿Eliminar este recurso?')) return;
+  DB.recursosPropios = (DB.recursosPropios||[]).filter(r=>r.id!==id);
+  DB.temas.forEach(t=>{ if(t.recursosPropios) t.recursosPropios=t.recursosPropios.filter(x=>x!==id); });
+  saveDB(); renderAdminRecursosPropios();
+}
+
+// ═══════════════════════════════════════════
+// ALUMNO — REPOSITORIO PERSONAL
+// ═══════════════════════════════════════════
+function guardarEnRepositorioAlumno(tipo, tema, datos, silencioso=false) {
+  const alumno = SESSION.user;
+  if (!alumno.repositorio) alumno.repositorio = [];
+  // Evitar duplicados del mismo tipo+tema
+  const yaExiste = alumno.repositorio.some(r => r.temaId===tema.id && r.tipo===tipo);
+  if (yaExiste) {
+    // Actualizar datos si ya existe
+    alumno.repositorio = alumno.repositorio.map(r =>
+      (r.temaId===tema.id && r.tipo===tipo) ? {...r, datos, fecha: new Date().toISOString()} : r
+    );
+  } else {
+    alumno.repositorio.push({
+      id: 'repo-'+Date.now(),
+      temaId: tema.id,
+      temaTitulo: tema.titulo,
+      temaNro: tema.numero,
+      temaBloque: tema.bloque,
+      tipo, fecha: new Date().toISOString(),
+      datos
+    });
+  }
+  saveDB();
+  if (!silencioso) mostrarToast(`💾 ${tipo} guardado en tu repositorio`);
+}
+
+function guardarTodosEnRepositorio(temaId) {
+  const t = DB.temas.find(x=>x.id===temaId);
+  if (!t || !t.recursos) return;
+  let count = 0;
+  Object.entries(t.recursos).forEach(([tipo, datos]) => {
+    guardarEnRepositorioAlumno(tipo, t, datos, true);
+    count++;
+  });
+  mostrarToast(`💾 ${count} recursos guardados en tu repositorio`);
+  // Refresh grid badges
+  if (currentTema && currentTema.id === temaId) {
+    const grid = document.getElementById('rec-grid-view');
+    if (grid) grid.innerHTML = buildRecGrid(t, SESSION.user);
+  }
+}
+
+function estaEnRepo(temaId, tipo) {
+  return (SESSION.user.repositorio||[]).some(r => r.temaId===temaId && r.tipo===tipo);
+}
+
+function toggleRepo(temaId, tipo) {
+  const t = DB.temas.find(x=>x.id===temaId);
+  if (!t) return;
+  const datos = t.recursos?.[tipo];
+  if (!datos) { mostrarToast('⚠️ Este recurso no está disponible aún'); return; }
+  const alumno = SESSION.user;
+  if (!alumno.repositorio) alumno.repositorio = [];
+  const yaEsta = estaEnRepo(temaId, tipo);
+  if (yaEsta) {
+    alumno.repositorio = alumno.repositorio.filter(r => !(r.temaId===temaId && r.tipo===tipo));
+    saveDB();
+    mostrarToast('🗑️ Eliminado del repositorio');
+  } else {
+    guardarEnRepositorioAlumno(tipo, t, datos, true);
+    mostrarToast('💾 Guardado en tu repositorio');
+  }
+  // Update save button in panel if visible
+  const btn = document.getElementById('repo-toggle-btn');
+  if (btn) btn.innerHTML = estaEnRepo(temaId, tipo) ? '💾 En repositorio' : '+ Guardar';
+}
+
+function mostrarToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);pointer-events:none;transition:opacity .3s';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300)}, 2200);
+}
+
+function renderAlumnoRepositorio() {
+  document.getElementById('topbar-actions').innerHTML = '';
+  const alumno = SESSION.user;
+  const repo = alumno.repositorio || [];
+  const totalTemas = [...new Set(repo.map(r=>r.temaId))].length;
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="hero-banner" style="margin-bottom:20px">
+      <div class="hero-title">Mi repositorio 🗃️</div>
+      <div class="hero-sub">${repo.length} recursos guardados · ${totalTemas} tema${totalTemas!==1?'s':''} · Accede aquí a tus materiales favoritos</div>
+    </div>
+    ${!repo.length ? `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+        <div class="card" style="border:2px dashed var(--border);background:var(--bg);text-align:center;padding:32px 20px">
+          <div style="font-size:36px;margin-bottom:12px">📚</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px">Abre un tema</div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:14px">Entra en cualquier tema y guarda los recursos que más te interesen</div>
+          <button class="btn btn-primary btn-sm" onclick="showPage('alumno-temas')">Ver mis temas →</button>
+        </div>
+        <div class="card" style="border:2px dashed var(--border);background:var(--bg);text-align:center;padding:32px 20px">
+          <div style="font-size:36px;margin-bottom:12px">💾</div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px">Guarda recursos</div>
+          <div style="font-size:12px;color:var(--ink3)">Usa el botón "+ Guardar" al abrir cualquier recurso, o "💾 Guardar todos" para guardarlos de golpe</div>
+        </div>
+      </div>` : `
+      <div style="display:flex;gap:10px;margin-bottom:18px;align-items:center;flex-wrap:wrap">
+        <input class="form-input" style="flex:1;min-width:160px" placeholder="🔍 Buscar en repositorio..." id="repo-search" oninput="filterRepositorio()">
+        <select class="form-input" style="width:auto" id="repo-filter-tema" onchange="filterRepositorio()">
+          <option value="">Todos los temas</option>
+          ${[...new Set(repo.map(r=>r.temaId))].map(tid=>{
+            const r = repo.find(x=>x.temaId===tid);
+            return `<option value="${tid}">${r.temaNro?'T'+r.temaNro+' — ':''}${(r.temaTitulo||tid).slice(0,40)}</option>`;
+          }).join('')}
+        </select>
+        <select class="form-input" style="width:auto" id="repo-filter-tipo" onchange="filterRepositorio()">
+          <option value="">Todos los tipos</option>
+          ${[...new Set(repo.map(r=>r.tipo))].map(tp=>{
+            const c = REC_CONFIG.find(x=>x.id===tp);
+            return `<option value="${tp}">${c?c.ico+' '+c.lbl:tp}</option>`;
+          }).join('')}
+        </select>
+        <button class="btn btn-danger btn-sm" onclick="limpiarRepositorio()">🗑️ Vaciar</button>
+      </div>
+      <div id="repo-list">${buildRepoList(repo)}</div>`}`;
+}
+
+function buildRepoList(repo) {
+  if (!repo.length) return `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-tit">Sin resultados</div></div>`;
+  // Group by tema
+  const byTema = {};
+  repo.forEach(r => { if (!byTema[r.temaId]) byTema[r.temaId]=[]; byTema[r.temaId].push(r); });
+  return Object.entries(byTema).map(([tid, items])=>{
+    const first = items[0];
+    const bClass = first.temaBloque==='Bloque I'?'b1':first.temaBloque==='Bloque II'?'b2':first.temaBloque==='Bloque III'?'b3':'b4';
+    const grads = {b1:'linear-gradient(135deg,#c84b31,#e8734a)',b2:'linear-gradient(135deg,#2d7a6e,#3da090)',b3:'linear-gradient(135deg,#2c5f8a,#4a8fc4)',b4:'linear-gradient(135deg,#5c3a7e,#8a5ab0)'};
+    return `<div class="card" style="margin-bottom:18px;overflow:hidden">
+      <div style="background:${grads[bClass]||grads.b1};padding:14px 18px;display:flex;align-items:center;gap:12px;margin:-22px -22px 16px">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0">T${first.temaNro||'?'}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:#fff;line-height:1.3">${first.temaTitulo||'Tema'}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65)">${first.temaBloque||''} · ${items.length} recurso${items.length>1?'s':''} guardado${items.length>1?'s':''}</div>
+        </div>
+        <button onclick="abrirRecursoAlumno('${tid}')" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer">Abrir tema →</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">
+        ${items.map(r=>{
+          const cfg = REC_CONFIG.find(x=>x.id===r.tipo) || {ico:'📄',lbl:r.tipo,grad:'linear-gradient(135deg,#888,#aaa)'};
+          return `<div style="border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s;box-shadow:var(--sh)"
+               onclick="verRecursoRepositorio('${r.id}')"
+               onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,.12)'"
+               onmouseleave="this.style.transform='';this.style.boxShadow='var(--sh)'">
+            <div style="background:${cfg.grad};padding:14px 12px 10px;text-align:center">
+              <div style="font-size:24px;margin-bottom:4px">${cfg.ico}</div>
+              <div style="font-size:11px;font-weight:600;color:#fff;line-height:1.3">${cfg.lbl}</div>
+            </div>
+            <div style="background:var(--bg2);padding:8px 10px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:10px;color:var(--ink3)">${new Date(r.fecha).toLocaleDateString('es-ES')}</span>
+              <button onclick="event.stopPropagation();eliminarDeRepo('${r.id}')"
+                style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--ink3);padding:0;line-height:1" title="Eliminar">✕</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterRepositorio() {
+  const alumno = SESSION.user;
+  const repo = alumno.repositorio || [];
+  const q = document.getElementById('repo-search')?.value?.toLowerCase() || '';
+  const filterTema = document.getElementById('repo-filter-tema')?.value || '';
+  const filterTipo = document.getElementById('repo-filter-tipo')?.value || '';
+  const filtered = repo.filter(r =>
+    (!q || (r.temaTitulo||'').toLowerCase().includes(q) || (r.tipo||'').includes(q)) &&
+    (!filterTema || r.temaId===filterTema) &&
+    (!filterTipo || r.tipo===filterTipo)
+  );
+  document.getElementById('repo-list').innerHTML = buildRepoList(filtered);
+}
+
+async function verRecursoRepositorio(repoId) {
+  const alumno = SESSION.user;
+  const r = (alumno.repositorio||[]).find(x=>x.id===repoId);
+  if (!r) return;
+  // Set currentTema temporarily and open the resource
+  currentTema = DB.temas.find(t=>t.id===r.temaId) || {id:r.temaId, titulo:r.temaTitulo, numero:r.temaNro, bloque:r.temaBloque, recursos:{}, contenido:''};
+  if (!currentTema.recursos) currentTema.recursos = {};
+  currentTema.recursos[r.tipo] = r.datos;
+  // Open resource modal then navigate to resource
+  await abrirRecursoAlumno(r.temaId, r.tipo);
+}
+
+function eliminarDeRepo(repoId) {
+  if (!confirm('¿Eliminar este recurso del repositorio?')) return;
+  const alumno = SESSION.user;
+  alumno.repositorio = (alumno.repositorio||[]).filter(r=>r.id!==repoId);
+  saveDB();
+  renderAlumnoRepositorio();
+}
+
+function limpiarRepositorio() {
+  if (!confirm('¿Eliminar todos los recursos de tu repositorio? Esta acción no se puede deshacer.')) return;
+  SESSION.user.repositorio = [];
+  saveDB();
+  renderAlumnoRepositorio();
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('open');stopAudio();}}));
+</script>
+</body>
+</html>
