@@ -1660,9 +1660,7 @@ async function callGemini(prompt, system, pdfBase64=null) {
     const b64 = pdfBase64.includes(',') ? pdfBase64.split(',')[1] : pdfBase64;
     parts.push({inline_data: {mime_type: 'application/pdf', data: b64}});
   }
-  parts.push({text: system + '
-
-' + prompt});
+  parts.push({text: system + '\n\n' + prompt});
 
   const body = {
     contents: [{role:'user', parts}],
