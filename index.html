@@ -160,7 +160,7 @@ select.form-input{cursor:pointer}
 .rcon{display:none}.rcon.active{display:block}
 
 /* ── RESOURCE CARD GRID ── */
-.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:4px}
+.rec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px}
 .rec-card{border-radius:14px;padding:16px 14px 14px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;border:1.5px solid transparent;text-align:left}
 .rec-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
 .rec-card.unavailable{opacity:.6;cursor:default}
@@ -346,6 +346,17 @@ select.form-input{cursor:pointer}
 
 /* ── TOAST ── */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── CHAT / TABLÓN ── */
+.msg-bubble{max-width:75%;padding:10px 14px;border-radius:14px;margin-bottom:10px;position:relative;word-break:break-word}
+.msg-bubble.mine{background:linear-gradient(135deg,#2d7a6e,#3da090);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.msg-bubble.other{background:var(--bg2);color:var(--ink);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg-bubble.profe{background:linear-gradient(135deg,#1a1a2e,#c84b31);color:#fff;border-bottom-left-radius:4px}
+.msg-meta{font-size:10px;opacity:.6;margin-bottom:4px}
+.msg-text{font-size:13px;line-height:1.6}
+.msg-time{font-size:9px;opacity:.5;text-align:right;margin-top:3px}
+.msg-pin{background:rgba(201,148,58,.1);border:1px solid rgba(201,148,58,.3);border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.msg-pin-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:4px;font-weight:600}
 </style>
 </head>
 <body>
@@ -430,7 +441,6 @@ select.form-input{cursor:pointer}
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap" id="mr-action-btns">
       <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:11px" onclick="descargarTemaPDF()">⬇️ Descargar tema</button>
       <button class="btn btn-sm" id="mr-dl-recurso" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:11px;display:none" onclick="descargarRecursoActual()">⬇️ Descargar recurso</button>
-      <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:11px" onclick="generarRecursosExtra()">✨ Recurso extra</button>
       <span id="mr-save-all-btn" style="display:none">
         <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:11px" onclick="guardarTodosEnRepositorio(currentTema?.id)">💾 Guardar todos</button>
       </span>
@@ -496,7 +506,8 @@ let DB = {
     {id:'a1', username:'alumno1', password:'opos2025', nombre:'Alumno Demo', scores:[], progreso:{}}
   ])),
   scores: JSON.parse(localStorage.getItem('db-scores') || '[]'),
-  recursosPropios: JSON.parse(localStorage.getItem('db-recursos-propios') || '[]')
+  recursosPropios: JSON.parse(localStorage.getItem('db-recursos-propios') || '[]'),
+  mensajes: JSON.parse(localStorage.getItem('db-mensajes') || '[]')
 };
 
 function saveDB() {
@@ -504,6 +515,7 @@ function saveDB() {
   localStorage.setItem('db-alumnos', JSON.stringify(DB.alumnos));
   localStorage.setItem('db-scores', JSON.stringify(DB.scores));
   localStorage.setItem('db-recursos-propios', JSON.stringify(DB.recursosPropios||[]));
+  localStorage.setItem('db-mensajes', JSON.stringify(DB.mensajes||[]));
 }
 
 // Session
@@ -620,6 +632,8 @@ const ADMIN_NAV = [
   {id:'admin-recursos-propios', ico:'🗂️', label:'Recursos propios'},
   {section:'Usuarios'},
   {id:'admin-alumnos', ico:'👥', label:'Alumnos'},
+  {section:'Comunidad'},
+  {id:'admin-chat', ico:'💬', label:'Tablón'},
   {section:'Sistema'},
   {id:'admin-config', ico:'⚙️', label:'Configuración'},
 ];
@@ -633,6 +647,8 @@ const ALUMNO_NAV = [
   {id:'alumno-flashcards', ico:'🃏', label:'Flashcards'},
   {section:'Mis recursos'},
   {id:'alumno-repositorio', ico:'🗃️', label:'Mi repositorio'},
+  {section:'Comunidad'},
+  {id:'alumno-chat', ico:'💬', label:'Tablón'},
 ];
 
 function renderNav() {
@@ -652,9 +668,9 @@ function showPage(id) {
   setActiveNav(id);
   const titles = {
     'admin-dashboard':'Dashboard', 'admin-temas':'Gestionar temas', 'admin-subir':'Subir material',
-    'admin-alumnos':'Alumnos', 'admin-config':'Configuración', 'admin-recursos-propios':'Recursos propios',
+    'admin-alumnos':'Alumnos', 'admin-config':'Configuración', 'admin-recursos-propios':'Recursos propios', 'admin-chat':'Tablón de la clase',
     'alumno-temas':'Mis temas', 'alumno-progreso':'Mi progreso',
-    'alumno-cuestionarios':'Cuestionarios', 'alumno-flashcards':'Flashcards', 'alumno-repositorio':'Mi repositorio'
+    'alumno-cuestionarios':'Cuestionarios', 'alumno-flashcards':'Flashcards', 'alumno-repositorio':'Mi repositorio', 'alumno-chat':'Tablón de la clase', 'admin-chat':'Tablón de la clase'
   };
   document.getElementById('page-title').textContent = titles[id] || '';
   const renders = {
@@ -669,6 +685,8 @@ function showPage(id) {
     'alumno-cuestionarios': () => renderSelectorView('cuestionario'),
     'alumno-flashcards': () => renderSelectorView('flashcards'),
     'alumno-repositorio': renderAlumnoRepositorio,
+    'alumno-chat': () => renderChat(false),
+    'admin-chat': () => renderChat(true),
   };
   if (renders[id]) renders[id]();
 }
@@ -1126,7 +1144,7 @@ async function testGeminiKey() {
   if (!key) { status.style.color='var(--red)'; status.textContent='⚠️ Introduce primero tu clave'; return; }
   status.textContent = '⏳ Probando conexión...'; status.style.color = 'var(--ink3)';
   try {
-    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key, {
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+key, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({contents:[{role:'user',parts:[{text:'Di solo: OK'}]}], generationConfig:{maxOutputTokens:10}})
     });
@@ -1404,16 +1422,21 @@ function renderSelectorView(tipo) {
 // ═══════════════════════════════════════════
 // Config for resource cards
 const REC_CONFIG = [
-  {id:'resumen',         ico:'📝', lbl:'Resumen ejecutivo',    desc:'Ideas clave y puntos de examen',      grad:'linear-gradient(135deg,#2d7a6e,#3da090)'},
-  {id:'audio',           ico:'🔊', lbl:'Narración en audio',   desc:'Escucha el resumen del tema',         grad:'linear-gradient(135deg,#5c3a7e,#8a5ab0)'},
-  {id:'slides',          ico:'🎬', lbl:'Presentación',         desc:'Diapositivas con narración',          grad:'linear-gradient(135deg,#2c5f8a,#4a8fc4)'},
-  {id:'cuestionario',    ico:'❓', lbl:'Test tipo test',        desc:'10 preguntas con corrección',         grad:'linear-gradient(135deg,#c84b31,#e8734a)'},
-  {id:'preguntas-cortas',ico:'✍️', lbl:'Preguntas cortas',     desc:'Respuesta libre corregida por IA',    grad:'linear-gradient(135deg,#b8780a,#d4a843)'},
-  {id:'flashcards',      ico:'🃏', lbl:'Flashcards',           desc:'Tarjetas de memorización',            grad:'linear-gradient(135deg,#1a2e35,#2d5a4e)'},
-  {id:'infografia',      ico:'🖼️', lbl:'Infografía visual',    desc:'Esquema visual a todo color',         grad:'linear-gradient(135deg,#3a1a4e,#6a2a8e)'},
-  {id:'cronologia',      ico:'📅', lbl:'Cronología normativa', desc:'Hitos legislativos ordenados',        grad:'linear-gradient(135deg,#1a3a2e,#2d6a4e)'},
-  {id:'mapa',            ico:'🧠', lbl:'Mapa conceptual',      desc:'Relaciones entre conceptos',          grad:'linear-gradient(135deg,#1a1a3e,#2d2d6e)'},
-  {id:'recursos-propios',ico:'📎', lbl:'Del profesor',         desc:'Materiales añadidos por el admin',    grad:'linear-gradient(135deg,#3e1a1a,#6e2d2d)'}
+  {id:'resumen',          ico:'📝', lbl:'Resumen ejecutivo',     desc:'Análisis profundo, conceptos y normativa',   grad:'linear-gradient(135deg,#2d7a6e,#3da090)'},
+  {id:'audio',            ico:'🔊', lbl:'Narración en audio',    desc:'Guión podcast de 8 min con índice',          grad:'linear-gradient(135deg,#5c3a7e,#8a5ab0)'},
+  {id:'slides',           ico:'🎬', lbl:'Presentación',          desc:'10 diapositivas con notas de examen',        grad:'linear-gradient(135deg,#2c5f8a,#4a8fc4)'},
+  {id:'cuestionario',     ico:'❓', lbl:'Test tipo test',         desc:'15 preguntas con dificultad y normativa',    grad:'linear-gradient(135deg,#c84b31,#e8734a)'},
+  {id:'preguntas-cortas', ico:'✍️', lbl:'Preguntas de desarrollo',desc:'6 preguntas corregidas por IA',             grad:'linear-gradient(135deg,#b8780a,#d4a843)'},
+  {id:'flashcards',       ico:'🃏', lbl:'Flashcards',            desc:'20 tarjetas por categoría',                  grad:'linear-gradient(135deg,#1a2e35,#2d5a4e)'},
+  {id:'infografia',       ico:'🖼️', lbl:'Infografía visual',     desc:'Visual completo con stats y normativa',      grad:'linear-gradient(135deg,#3a1a4e,#6a2a8e)'},
+  {id:'cronologia',       ico:'📅', lbl:'Cronología normativa',  desc:'12-15 hitos legislativos detallados',        grad:'linear-gradient(135deg,#1a3a2e,#2d6a4e)'},
+  {id:'mapa',             ico:'🧠', lbl:'Mapa conceptual',       desc:'5 ramas con conceptos y relaciones',         grad:'linear-gradient(135deg,#1a1a3e,#2d2d6e)'},
+  {id:'supuesto',         ico:'📋', lbl:'Supuesto práctico',     desc:'Caso real de inspección con resolución',     grad:'linear-gradient(135deg,#3e2a0a,#7a5010)'},
+  {id:'oral',             ico:'🎤', lbl:'Simulacro oral',        desc:'Guión 15 min + preguntas del tribunal',      grad:'linear-gradient(135deg,#1a0a2e,#4a1a6e)'},
+  {id:'normativa-prof',   ico:'⚖️', lbl:'Análisis normativo',    desc:'Normativa estatal y de Extremadura',         grad:'linear-gradient(135deg,#0a1a3e,#1a3a7e)'},
+  {id:'comparativa',      ico:'📊', lbl:'Tabla comparativa',     desc:'Comparación exhaustiva de conceptos',        grad:'linear-gradient(135deg,#1e3a1a,#3a6e2a)'},
+  {id:'glosario',         ico:'📖', lbl:'Glosario técnico',      desc:'22-25 términos con base normativa',          grad:'linear-gradient(135deg,#3a1e0a,#6e3a10)'},
+  {id:'recursos-propios', ico:'📎', lbl:'Del profesor',          desc:'Materiales añadidos por el admin',           grad:'linear-gradient(135deg,#3e1a1a,#6e2d2d)'}
 ];
 
 async function abrirRecursoAlumno(id, tabInicial='') {
@@ -1592,6 +1615,11 @@ async function loadRTab(id) {
       case 'infografia': await loadInfografia(el, t, cached); break;
       case 'cronologia': await loadCronologia(el, t, cached); break;
       case 'mapa': await loadMapa(el, t, cached); break;
+      case 'supuesto': await loadSupuesto(el, t, cached); break;
+      case 'oral': await loadOral(el, t, cached); break;
+      case 'normativa-prof': await loadNormativaProf(el, t, cached); break;
+      case 'comparativa': await loadComparativa(el, t, cached); break;
+      case 'glosario': await loadGlosario(el, t, cached); break;
     }
     return;
   }
@@ -1613,6 +1641,11 @@ async function loadRTab(id) {
     case 'infografia': await loadInfografia(el, t, null); break;
     case 'cronologia': await loadCronologia(el, t, null); break;
     case 'mapa': await loadMapa(el, t, null); break;
+    case 'supuesto': await loadSupuesto(el, t, null); break;
+    case 'oral': await loadOral(el, t, null); break;
+    case 'normativa-prof': await loadNormativaProf(el, t, null); break;
+    case 'comparativa': await loadComparativa(el, t, null); break;
+    case 'glosario': await loadGlosario(el, t, null); break;
   }
 }
 
@@ -2449,6 +2482,135 @@ function renderMapa(el, d) {
 }
 
 // ═══════════════════════════════════════════
+// RECURSO: SUPUESTO PRÁCTICO
+// ═══════════════════════════════════════════
+async function loadSupuesto(el, t, cached) {
+  if (cached) { el.innerHTML = cached; return; }
+  el.innerHTML = spinEl('Generando supuesto práctico de inspección...');
+  try {
+    const html = await claude(
+      'Tema: "' + t.titulo + '" (' + t.bloque + '). Contenido: ' + t.contenido.slice(0,4500) + '\n\n' +
+      'Genera un SUPUESTO PRÁCTICO completo de nivel oposición de Inspector de Educación de Extremadura. ' +
+      'Estructura en HTML con estas secciones:\n' +
+      '<h2>📋 Supuesto práctico: [título descriptivo]</h2>\n' +
+      '<h3>Situación planteada</h3> Descripción detallada y realista de un centro educativo con un problema concreto relacionado con el tema (nombre ficticio del centro, etapa, características, contexto socioeconómico).\n' +
+      '<h3>Datos del centro y contexto</h3> Estadísticas, organización, alumnado afectado, antecedentes.\n' +
+      '<h3>Requerimiento de la Inspección</h3> Qué se le pide al inspector y en qué marco actúa.\n' +
+      '<h3>Cuestiones a resolver</h3> Mínimo 5 preguntas específicas y detalladas numeradas.\n' +
+      '<h3>Desarrollo y resolución</h3> Resolución exhaustiva de cada cuestión con base normativa citando artículos concretos de leyes estatales y de Extremadura.\n' +
+      '<h3>Normativa aplicable</h3> Listado completo de leyes, decretos y artículos concretos citados.\n' +
+      '<h3>Actuaciones del inspector paso a paso</h3> Protocolo de actuación detallado.\n' +
+      '<h3>Documentación que generaría el inspector</h3> Qué documentos redactaría y por qué.\n' +
+      '<h3>Conclusiones y recomendaciones</h3> Síntesis y medidas de mejora.\n' +
+      'Máxima profundidad y rigor. Nivel real de oposición. HTML limpio con <h2>,<h3>,<p>,<ul>,<li>,<strong>,<blockquote>.',
+      'Eres un Inspector de Educación de Extremadura con 20 años de experiencia preparando oposiciones. Genera supuestos prácticos de altísima calidad y rigor jurídico.'
+    );
+    cacheRecurso('supuesto', html);
+    el.innerHTML = '<div class="gen-result">' + html + '</div>';
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: SIMULACRO ORAL
+// ═══════════════════════════════════════════
+async function loadOral(el, t, cached) {
+  if (cached) { el.innerHTML = cached; return; }
+  el.innerHTML = spinEl('Generando simulacro de examen oral...');
+  try {
+    const html = await claude(
+      'Tema: "' + t.titulo + '" (' + t.bloque + '). Contenido: ' + t.contenido.slice(0,4500) + '\n\n' +
+      'Genera un SIMULACRO COMPLETO DE EXAMEN ORAL para la oposición de Inspector de Educación de Extremadura. HTML con:\n' +
+      '<h2>🎤 Simulacro de exposición oral</h2>\n' +
+      '<h3>Guión de exposición estructurado (15-20 minutos)</h3> Desarrollo completo del tema organizado por bloques con tiempos estimados para cada parte. Redactado como si fuera el opositor hablando. Incluye introducción que enganche al tribunal, desarrollo argumentado con normativa integrada de forma natural, ejemplos prácticos de Extremadura, y conclusión que destaque los puntos clave.\n' +
+      '<h3>Posibles preguntas del tribunal (mínimo 12)</h3> Para cada pregunta: la pregunta y una respuesta modelo completa de 4-6 líneas. Incluye preguntas de normativa concreta, casos prácticos, conexiones con otros temas, actualidad educativa.\n' +
+      '<h3>Aspectos que el tribunal valora especialmente</h3> Lista detallada de criterios de evaluación.\n' +
+      '<h3>Errores frecuentes que debes evitar</h3> Los fallos más comunes en este tema específico.\n' +
+      '<h3>Citas y artículos que impresionan al tribunal</h3> Normativa específica que demuestran dominio del tema.\n' +
+      '<h3>Conexiones estratégicas con el temario</h3> Cómo relacionar este tema con otros para demostrar visión global.\n' +
+      '<h3>Vocabulario técnico imprescindible</h3> Términos que debes usar obligatoriamente.',
+      'Eres un Inspector de Educación de Extremadura experto en tribunales de oposición.'
+    );
+    cacheRecurso('oral', html);
+    el.innerHTML = '<div class="gen-result">' + html + '</div>';
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: ANÁLISIS NORMATIVO PROFESIONAL
+// ═══════════════════════════════════════════
+async function loadNormativaProf(el, t, cached) {
+  if (cached) { el.innerHTML = cached; return; }
+  el.innerHTML = spinEl('Generando análisis normativo exhaustivo...');
+  try {
+    const html = await claude(
+      'Tema: "' + t.titulo + '" (' + t.bloque + '). Contenido: ' + t.contenido.slice(0,4500) + '\n\n' +
+      'Genera un ANÁLISIS NORMATIVO EXHAUSTIVO Y PROFESIONAL. HTML con:\n' +
+      '<h2>⚖️ Marco normativo: ' + t.titulo + '</h2>\n' +
+      '<h3>Normativa estatal (por orden jerárquico)</h3> Constitución española, Leyes Orgánicas, Leyes ordinarias, Reales Decretos, Órdenes ministeriales. Para cada norma: nombre oficial completo, fecha, BOE, artículos más relevantes para este tema con su contenido resumido.\n' +
+      '<h3>Normativa de Extremadura</h3> Estatuto de Autonomía, Leyes autonómicas, Decretos de la Junta, Órdenes de la Consejería de Educación. Artículos concretos y su aplicación.\n' +
+      '<h3>Normativa europea e internacional</h3> Si aplica al tema.\n' +
+      '<h3>Evolución legislativa cronológica</h3> Cómo ha cambiado la normativa en este tema a lo largo del tiempo, desde la LGE hasta la LOMLOE.\n' +
+      '<h3>Artículos clave para memorizar</h3> Los artículos más citados en exámenes, con su texto o resumen.\n' +
+      '<h3>Conflictos normativos y puntos de debate</h3> Tensiones entre normas, interpretaciones diversas, aspectos controvertidos.\n' +
+      '<h3>Jurisprudencia relevante</h3> Sentencias del Tribunal Constitucional, Tribunal Supremo o TSJ de Extremadura si aplican.\n' +
+      '<h3>Preguntas de examen relacionadas con normativa</h3> Las preguntas más habituales sobre normativa en este tema.',
+      'Eres un jurista especializado en derecho educativo español y extremeño con dominio total de la normativa vigente.'
+    );
+    cacheRecurso('normativa-prof', html);
+    el.innerHTML = '<div class="gen-result">' + html + '</div>';
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: TABLA COMPARATIVA
+// ═══════════════════════════════════════════
+async function loadComparativa(el, t, cached) {
+  if (cached) { el.innerHTML = cached; return; }
+  el.innerHTML = spinEl('Generando tabla comparativa exhaustiva...');
+  try {
+    const html = await claude(
+      'Tema: "' + t.titulo + '" (' + t.bloque + '). Contenido: ' + t.contenido.slice(0,4500) + '\n\n' +
+      'Genera una TABLA COMPARATIVA EXHAUSTIVA para la oposición de Inspector de Educación. HTML con:\n' +
+      '<h2>📊 Análisis comparativo: ' + t.titulo + '</h2>\n' +
+      'Crea UNA O VARIAS tablas HTML comparativas de los conceptos, figuras, etapas, funciones o normativas más relevantes del tema. Compara mínimo 6 elementos con mínimo 7 criterios. CSS inline: table{width:100%;border-collapse:collapse;margin:16px 0} th{background:#1a1a2e;color:#fff;padding:10px;font-size:12px;text-align:left} td{border:1px solid #e0ddd6;padding:9px 10px;font-size:12px;vertical-align:top} tr:nth-child(even)td{background:#f7f6f2}.\n' +
+      'Después de cada tabla añade:\n' +
+      '<h3>Análisis de las diferencias clave</h3> Párrafos explicativos de los aspectos más importantes de la comparación.\n' +
+      '<h3>Implicaciones para la práctica inspectora</h3> Cómo afecta esta comparación al trabajo del inspector.\n' +
+      '<h3>Preguntas de examen habituales sobre este análisis</h3>',
+      'Eres un Inspector de Educación experto en análisis comparativo de normativa y sistemas educativos.'
+    );
+    cacheRecurso('comparativa', html);
+    el.innerHTML = '<div class="gen-result">' + html + '</div>';
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+// ═══════════════════════════════════════════
+// RECURSO: GLOSARIO TÉCNICO
+// ═══════════════════════════════════════════
+async function loadGlosario(el, t, cached) {
+  if (cached) { el.innerHTML = cached; return; }
+  el.innerHTML = spinEl('Generando glosario técnico profesional...');
+  try {
+    const html = await claude(
+      'Tema: "' + t.titulo + '" (' + t.bloque + '). Contenido: ' + t.contenido.slice(0,4500) + '\n\n' +
+      'Genera un GLOSARIO TÉCNICO PROFESIONAL completo. HTML con:\n' +
+      '<h2>📖 Glosario técnico: ' + t.titulo + '</h2>\n' +
+      '<p>25-30 términos técnicos, jurídicos y pedagógicos ordenados alfabéticamente.</p>\n' +
+      'Para cada término usa este formato HTML:\n' +
+      '<dl><dt style="font-weight:700;color:#c84b31;font-size:14px;margin-top:16px;border-bottom:1px solid #e0ddd6;padding-bottom:4px">TÉRMINO</dt>' +
+      '<dd style="margin:8px 0 0 16px"><p><strong>Definición técnica:</strong> Definición precisa y completa de 2-3 líneas con el significado exacto en el contexto educativo-jurídico español.</p>' +
+      '<p><strong>Base normativa:</strong> Ley, decreto o norma donde aparece definido o regulado, con artículo concreto.</p>' +
+      '<p><strong>En la práctica inspectora:</strong> Cómo aparece este término en el trabajo del inspector y su relevancia.</p>' +
+      '<p><strong>En el examen:</strong> Cómo puede preguntarse este término y qué hay que destacar en la respuesta.</p></dd></dl>\n' +
+      'Incluye términos de: normativa, organización escolar, funciones inspectoras, evaluación, currículo, gestión, y términos de Extremadura específicamente.',
+      'Eres un Inspector de Educación de Extremadura con dominio total de la terminología técnico-jurídica educativa.'
+    );
+    cacheRecurso('glosario', html);
+    el.innerHTML = '<div class="gen-result">' + html + '</div>';
+  } catch(e) { el.innerHTML = errEl(e.message); }
+}
+
+// ═══════════════════════════════════════════
 // GENERAR TODOS LOS RECURSOS (ADMIN)
 // ═══════════════════════════════════════════
 async function generarTodosRecursos(id) {
@@ -2473,6 +2635,11 @@ async function generarTodosRecursosParaTema(t) {
     ['cronologia', async()=>{ const el=document.createElement('div'); await loadCronologia(el,t,null); }],
     ['mapa', async()=>{ const el=document.createElement('div'); await loadMapa(el,t,null); }],
     ['slides', async()=>{ const el=document.createElement('div'); await loadSlides(el,t,null); }],
+    ['supuesto', async()=>{ const el=document.createElement('div'); await loadSupuesto(el,t,null); }],
+    ['oral', async()=>{ const el=document.createElement('div'); await loadOral(el,t,null); }],
+    ['normativa-prof', async()=>{ const el=document.createElement('div'); await loadNormativaProf(el,t,null); }],
+    ['comparativa', async()=>{ const el=document.createElement('div'); await loadComparativa(el,t,null); }],
+    ['glosario', async()=>{ const el=document.createElement('div'); await loadGlosario(el,t,null); }],
   ];
   for (const [,fn] of loaders) { try { await fn(); } catch(e) { console.warn(e); } }
 }
@@ -3165,6 +3332,131 @@ function limpiarRepositorio() {
   SESSION.user.repositorio = [];
   saveDB();
   renderAlumnoRepositorio();
+}
+
+// ═══════════════════════════════════════════
+// TABLÓN / CHAT
+// ═══════════════════════════════════════════
+function renderChat(isAdmin) {
+  document.getElementById('topbar-actions').innerHTML = '';
+  const msgs = DB.mensajes || [];
+  const pinned = msgs.filter(m => m.pinned);
+  const regular = msgs.filter(m => !m.pinned);
+  const user = SESSION.user;
+  const userName = user.nombre || user.username || 'Admin';
+
+  document.getElementById('main-content').innerHTML =
+    '<div class="hero-banner" style="margin-bottom:20px">' +
+    '<div class="hero-title">💬 Tablón de la clase</div>' +
+    '<div class="hero-sub">Espacio de comunicación entre alumnos y el profesor · ' + msgs.length + ' mensajes</div></div>' +
+
+    '<div style="display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start">' +
+
+    // Main chat area
+    '<div>' +
+    (pinned.length ? '<div style="margin-bottom:16px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:8px;font-weight:600">📌 Mensajes fijados</div>' +
+    pinned.map(m => renderMsgPinned(m)).join('') + '</div>' : '') +
+
+    '<div id="chat-msgs" style="display:flex;flex-direction:column;max-height:450px;overflow-y:auto;padding:4px 0;margin-bottom:14px">' +
+    (regular.length ? regular.slice(-50).map(m => renderMsg(m, userName, isAdmin)).join('') :
+    '<div class="empty" style="padding:32px 0"><div class="empty-ico">💬</div><div class="empty-tit">Sin mensajes todavía</div><div class="empty-txt">Sé el primero en escribir</div></div>') +
+    '</div>' +
+
+    '<div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);padding:14px">' +
+    '<textarea id="chat-input" class="form-input" rows="3" placeholder="Escribe un mensaje..." style="margin-bottom:10px;resize:none"></textarea>' +
+    '<div style="display:flex;gap:8px;justify-content:space-between;align-items:center">' +
+    (isAdmin ? '<label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer"><input type="checkbox" id="chat-pin"> 📌 Fijar mensaje</label>' : '<div></div>') +
+    '<button class="btn btn-teal" onclick="enviarMensaje(' + isAdmin + ')">Enviar →</button>' +
+    '</div></div></div>' +
+
+    // Sidebar: temas activos, alumnos
+    '<div style="display:flex;flex-direction:column;gap:14px">' +
+    '<div class="card"><div class="section-title">Participantes</div>' +
+    '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg3)">' +
+    '<div class="sb-avatar admin" style="width:28px;height:28px;font-size:11px">A</div>' +
+    '<div><div style="font-size:12px;font-weight:600">Administrador / Profesor</div><div style="font-size:10px;color:var(--ink3)">Inspector de Educación</div></div></div>' +
+    DB.alumnos.map(a =>
+      '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bg3)">' +
+      '<div class="sb-avatar alumno" style="width:28px;height:28px;font-size:11px">' + (a.nombre?a.nombre[0]:a.username[0]).toUpperCase() + '</div>' +
+      '<div><div style="font-size:12px;font-weight:500">' + (a.nombre||a.username) + '</div><div style="font-size:10px;color:var(--ink3)">@' + a.username + '</div></div></div>'
+    ).join('') + '</div>' +
+    '<div class="card"><div class="section-title">Temas publicados</div>' +
+    DB.temas.filter(t=>t.publicado).slice(0,6).map(t =>
+      '<div style="font-size:12px;padding:5px 0;border-bottom:1px solid var(--bg3);color:var(--ink2)">' +
+      '<span style="color:var(--red);font-weight:600">T' + (t.numero||'?') + '</span> ' + t.titulo.slice(0,40) + '</div>'
+    ).join('') +
+    (DB.temas.filter(t=>t.publicado).length > 6 ? '<div style="font-size:11px;color:var(--ink3);margin-top:6px">+ ' + (DB.temas.filter(t=>t.publicado).length-6) + ' más</div>' : '') +
+    '</div></div></div>';
+
+  // Scroll to bottom
+  setTimeout(() => {
+    const c = document.getElementById('chat-msgs');
+    if (c) c.scrollTop = c.scrollHeight;
+  }, 100);
+}
+
+function renderMsg(m, myName, isAdmin) {
+  const isMine = m.autor === myName || (isAdmin && m.rol === 'admin');
+  const isProfe = m.rol === 'admin';
+  const bubbleClass = isMine ? 'mine' : (isProfe ? 'profe' : 'other');
+  return '<div style="display:flex;flex-direction:column;' + (isMine?'align-items:flex-end':'') + '">' +
+    '<div class="msg-bubble ' + bubbleClass + '">' +
+    '<div class="msg-meta">' + (isProfe?'👨‍🏫 ':'' ) + m.autor + (m.tema ? ' · sobre T' + m.tema : '') + '</div>' +
+    '<div class="msg-text">' + escHtml(m.texto) + '</div>' +
+    '<div class="msg-time">' + formatMsgTime(m.fecha) + '</div>' +
+    '</div>' +
+    (isAdmin && !m.pinned ? '<button onclick="fijarMensaje(\'' + m.id + '\')" style="font-size:10px;color:var(--ink3);background:none;border:none;cursor:pointer;margin-bottom:4px">📌 Fijar</button>' : '') +
+    '</div>';
+}
+
+function renderMsgPinned(m) {
+  return '<div class="msg-pin">' +
+    '<div class="msg-pin-label">📌 Mensaje fijado por el profesor</div>' +
+    '<div style="font-size:13px;color:var(--ink);line-height:1.6">' + escHtml(m.texto) + '</div>' +
+    '<div style="font-size:10px;color:var(--ink3);margin-top:4px">' + m.autor + ' · ' + formatMsgTime(m.fecha) + '</div>' +
+    '</div>';
+}
+
+function escHtml(t) {
+  return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function formatMsgTime(fecha) {
+  if (!fecha) return '';
+  const d = new Date(fecha);
+  const now = new Date();
+  const diff = (now-d)/1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return Math.floor(diff/60) + ' min';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h';
+  return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+}
+
+function enviarMensaje(isAdmin) {
+  const input = document.getElementById('chat-input');
+  const texto = input?.value.trim();
+  if (!texto) return;
+  const user = SESSION.user;
+  const pinear = isAdmin && document.getElementById('chat-pin')?.checked;
+  const msg = {
+    id: 'msg-' + Date.now(),
+    texto, pinned: pinear,
+    autor: user.nombre || user.username || 'Admin',
+    rol: isAdmin ? 'admin' : 'alumno',
+    fecha: new Date().toISOString()
+  };
+  if (!DB.mensajes) DB.mensajes = [];
+  DB.mensajes.push(msg);
+  saveDB();
+  input.value = '';
+  if (isAdmin && document.getElementById('chat-pin')) document.getElementById('chat-pin').checked = false;
+  renderChat(isAdmin);
+  mostrarToast('✓ Mensaje enviado');
+}
+
+function fijarMensaje(id) {
+  const m = (DB.mensajes||[]).find(x=>x.id===id);
+  if (m) { m.pinned = true; saveDB(); renderChat(true); }
 }
 
 // Close modals on overlay click
